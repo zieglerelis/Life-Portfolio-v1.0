@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Life Portfolio" />
+  <title>Life Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --blue:        #007AFF;
+      --blue-light:  #EBF4FF;
+      --green:       #34C759;
+      --orange:      #FF9500;
+      --red:         #FF3B30;
+      --purple:      #5856D6;
+      --teal:        #30B0C7;
+      --bg:          #F2F2F7;
+      --card:        #FFFFFF;
+      --text:        #1C1C1E;
+      --text2:       #8E8E93;
+      --text3:       #C7C7CC;
+      --border:      #E5E5EA;
+    }
+
+```
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { display: none; }
+input[type=number] { -moz-appearance: textfield; }
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* ── HEADER ── */
+#header {
+  background: var(--card);
+  padding: env(safe-area-inset-top, 44px) 20px 0;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 14px;
+}
+.score-big { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.1; }
+.score-big span.num { }
+.score-big span.denom { font-size: 16px; color: var(--text3); font-weight: 400; }
+.day-badge {
+  background: var(--blue-light);
+  border-radius: 14px;
+  padding: 8px 14px;
+  text-align: center;
+}
+.day-badge .num { font-size: 24px; font-weight: 700; color: var(--blue); line-height: 1; }
+.day-badge .lbl { font-size: 9px; color: var(--blue); font-weight: 600; letter-spacing: 0.5px; margin-top: 1px; }
+.status-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+.status-pill {
+  font-size: 11px; font-weight: 600; padding: 3px 8px;
+  border-radius: 20px; letter-spacing: 0.2px;
+}
+.vs-label { font-size: 12px; font-weight: 600; }
+
+/* Sparkline */
+#sparkline-wrap { margin-top: 12px; }
+.day-labels {
+  display: flex; justify-content: space-between;
+  width: 100%; margin-top: 2px;
+}
+.day-labels span {
+  font-size: 10px; color: var(--text3);
+  width: 40px; text-align: center;
+}
+.day-labels span.today { color: var(--blue); font-weight: 600; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+.tab-btn {
+  flex: 1; background: none; border: none; cursor: pointer;
+  padding: 12px 0 10px;
+  font-size: 13px; font-weight: 400;
+  color: var(--text2);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.tab-btn.active { color: var(--blue); font-weight: 600; border-bottom-color: var(--blue); }
+
+/* ── VIEWS ── */
+.view { display: none; padding: 20px 16px 0; animation: slideUp 0.3s ease; }
+.view.active { display: block; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Section label */
+.section-label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+/* Metric row */
+.metric-row { border-bottom: 1px solid var(--border); }
+.metric-row:last-child { border-bottom: none; }
+
+.metric-header {
+  display: flex; align-items: center;
+  padding: 14px 16px 8px; gap: 12px;
+}
+.metric-icon {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: #f0f0f5;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+  font-size: 15px;
+}
+.metric-icon.answered { background: var(--blue-light); }
+.metric-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.metric-sub { font-size: 12px; color: var(--text2); }
+.info-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 4px; margin-left: auto; opacity: 0.5;
+  font-size: 16px; color: var(--blue);
+}
+
+.metric-input { padding: 0 16px 14px 60px; }
+
+/* Bool buttons */
+.bool-wrap { display: flex; gap: 8px; }
+.bool-btn {
+  flex: 1; padding: 9px 0; border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text2);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.bool-btn.yes-active { border-color: var(--green); background: rgba(52,199,89,0.08); color: var(--green); }
+.bool-btn.no-active  { border-color: var(--red);   background: rgba(255,59,48,0.08);  color: var(--red); }
+
+/* Stepper */
+.stepper-wrap {
+  display: flex; align-items: center; gap: 12px;
+}
+.stepper {
+  display: flex; align-items: center;
+  background: var(--bg); border-radius: 10px;
+  border: 1.5px solid var(--border);
+  overflow: hidden; transition: border-color 0.15s;
+}
+.stepper.has-val { border-color: var(--blue); }
+.stepper-btn {
+  background: none; border: none; width: 40px; height: 40px;
+  font-size: 20px; color: var(--text2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+}
+.stepper input {
+  width: 52px; height: 40px; text-align: center;
+  border: none; background: transparent;
+  font-size: 17px; font-weight: 600; color: var(--text);
+  outline: none; font-family: inherit;
+}
+.stepper-unit { font-size: 13px; color: var(--text2); }
+.stepper-hint { font-size: 12px; font-weight: 600; margin-left: auto; }
+
+/* Progress bar */
+.prog-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+.prog-fill  { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.3s ease; }
+
+/* Score preview */
+.score-preview {
+  background: var(--card); border-radius: 16px;
+  padding: 14px 16px; margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.score-preview .lbl { font-size: 14px; color: var(--text2); }
+.score-preview .val { font-size: 22px; font-weight: 700; }
+.score-preview .delta { font-size: 12px; font-weight: 600; }
+
+/* Save button */
+.save-btn {
+  width: 100%; padding: 15px; border-radius: 14px; border: none;
+  background: var(--blue); color: #fff;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  letter-spacing: 0.2px; margin-bottom: 8px;
+  box-shadow: 0 4px 16px rgba(0,122,255,0.3);
+  transition: background 0.3s; font-family: inherit;
+}
+.save-btn.saved { background: var(--green); box-shadow: 0 4px 16px rgba(52,199,89,0.3); }
+.save-hint { font-size: 12px; color: var(--text3); text-align: center; padding-bottom: 8px; }
+
+/* Portfolio cards */
+.portfolio-hero {
+  background: var(--card); border-radius: 20px;
+  padding: 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.hero-inner { display: flex; align-items: center; gap: 20px; }
+.ring-wrap { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.ring-score {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; line-height: 1;
+}
+.hero-right { flex: 1; }
+.hero-delta { font-size: 26px; font-weight: 700; line-height: 1; }
+.hero-sub   { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.stat-card {
+  background: var(--card); border-radius: 20px;
+  padding: 16px 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.stat-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+
+/* Bar row */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-label { font-size: 12px; width: 68px; flex-shrink: 0; color: var(--text2); }
+.bar-label.today { color: var(--blue); font-weight: 600; }
+.bar-track { flex: 1; height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.bar-val   { font-size: 13px; font-weight: 600; width: 24px; text-align: right; }
+
+/* Pillar bar */
+.pillar-row { margin-bottom: 12px; }
+.pillar-row:last-child { margin-bottom: 0; }
+.pillar-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.pillar-name  { font-size: 13px; font-weight: 600; }
+.pillar-score { font-size: 13px; font-weight: 600; }
+.pillar-track { height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.pillar-fill  { height: 100%; border-radius: 3px; opacity: 0.85; transition: width 0.4s; }
+
+/* Drinks budget */
+.budget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.budget-val { font-size: 14px; font-weight: 700; }
+.budget-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.budget-fill  { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.budget-hint  { font-size: 12px; color: var(--text2); }
+
+/* History */
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.history-count  { font-size: 12px; color: var(--text2); font-weight: 500; }
+.backup-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--blue-light); border: none; border-radius: 20px;
+  padding: 6px 12px; color: var(--blue); font-size: 12px;
+  font-weight: 600; cursor: pointer; font-family: inherit;
+}
+
+.history-item {
+  background: var(--card); border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.history-item .left { flex: 1; }
+.history-item .date { font-size: 14px; font-weight: 600; }
+.history-item .date.today { color: var(--blue); }
+.history-chips { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+.chip {
+  font-size: 11px; font-weight: 500;
+  padding: 2px 7px; border-radius: 20px;
+}
+.chip.good { color: var(--green); background: rgba(52,199,89,0.1); }
+.chip.bad  { color: var(--orange); background: rgba(255,149,0,0.1); }
+.history-score .val  { font-size: 22px; font-weight: 700; text-align: center; }
+.history-score .lbl  { font-size: 10px; color: var(--text3); font-weight: 500; text-align: center; }
+
+.empty-state {
+  background: var(--card); border-radius: 20px;
+  padding: 40px 20px; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.empty-state .emoji { font-size: 32px; margin-bottom: 10px; }
+.empty-state p { font-size: 15px; color: var(--text2); }
+
+.reset-btn {
+  width: 100%; padding: 13px; border-radius: 14px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--red); font-size: 14px; font-weight: 600;
+  cursor: pointer; margin-top: 8px; font-family: inherit;
+}
+
+/* ── MODAL (definition + data) ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3); z-index: 200;
+  align-items: flex-end;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--card); border-radius: 20px 20px 0 0;
+  padding: 20px 24px env(safe-area-inset-bottom, 24px);
+  width: 100%; max-width: 480px; margin: 0 auto;
+  box-shadow: 0 -4px 40px rgba(0,0,0,0.12);
+  animation: sheetUp 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.drag-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 0 auto 20px;
+}
+.modal-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.modal-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--blue-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.modal-title { font-size: 17px; font-weight: 700; }
+.modal-sub   { font-size: 12px; color: var(--text2); }
+.modal-close {
+  margin-left: auto; background: rgba(142,142,147,0.1);
+  border: none; border-radius: 20px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: var(--text2);
+}
+.modal-body { font-size: 15px; color: var(--text2); line-height: 1.65; }
+
+/* Data modal actions */
+.data-action {
+  width: 100%; padding: 13px 16px; border-radius: 12px;
+  border: none; font-size: 15px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center;
+  gap: 10px; margin-bottom: 10px; font-family: inherit;
+  text-align: left;
+}
+.data-action.primary { background: var(--blue); color: #fff; }
+.data-action.secondary { background: var(--bg); color: var(--text); }
+.data-action.danger {
+  background: rgba(255,59,48,0.08);
+  color: var(--red); border: 1px solid rgba(255,59,48,0.2);
+}
+.divider { height: 1px; background: var(--border); margin: 8px 0 16px; }
+
+.import-feedback {
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  margin-bottom: 12px; display: none;
+}
+.import-feedback.success { background: rgba(52,199,89,0.1); color: var(--green); display: flex; gap: 8px; }
+.import-feedback.error   { background: rgba(255,59,48,0.08); color: var(--red); display: flex; gap: 8px; }
+
+/* ── BOTTOM TAB BAR ── */
+#tabbar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+.nav-btn {
+  flex: 1; background: none; border: none; cursor: pointer;
+  padding: 10px 0 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-family: inherit;
+}
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: transparent; transition: background 0.15s;
+}
+.nav-dot.active { background: var(--blue); }
+.nav-label { font-size: 11px; font-weight: 400; color: var(--text2); letter-spacing: 0.2px; }
+.nav-label.active { color: var(--blue); font-weight: 600; }
+```
+
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+
+<div id="header">
+  <div class="header-row">
+    <div>
+      <div style="font-size:13px;color:var(--text2);font-weight:500;margin-bottom:2px" id="day-label">Day 1 of 90</div>
+      <div class="score-big">
+        <span class="num" id="avg-score">—</span>
+        <span class="denom" id="avg-denom"></span>
+      </div>
+      <div class="status-row">
+        <span class="status-pill" id="status-pill"></span>
+        <span class="vs-label" id="vs-label"></span>
+      </div>
+    </div>
+    <div class="day-badge">
+      <div class="num" id="days-left">—</div>
+      <div class="lbl">DAYS LEFT</div>
+    </div>
+  </div>
+
+  <div id="sparkline-wrap">
+    <svg id="sparkline-svg" width="100%" height="44" style="max-width:340px;display:block"></svg>
+    <div class="day-labels" id="day-labels" style="max-width:340px"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchView('today')">Log</button>
+    <button class="tab-btn" onclick="switchView('portfolio')">Portfolio</button>
+    <button class="tab-btn" onclick="switchView('history')">History</button>
+  </div>
+</div>
+
+<!-- ── VIEW: LOG TODAY ── -->
+
+<div id="view-today" class="view active">
+  <div style="font-size:12px;color:var(--text2);font-weight:500;margin-bottom:12px;letter-spacing:0.2px" id="today-date-label"></div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+
+  <!-- Body -->
+
+  <div class="section-label" style="color:var(--blue)">Body</div>
+  <div class="card" id="group-body"></div>
+
+  <!-- Mind -->
+
+  <div class="section-label" style="color:var(--teal)">Mind</div>
+  <div class="card" id="group-mind"></div>
+
+  <!-- Spirit -->
+
+  <div class="section-label" style="color:var(--purple)">Spirit</div>
+  <div class="card" id="group-spirit"></div>
+
+  <!-- Score preview -->
+
+  <div class="score-preview" id="score-preview" style="display:none">
+    <div class="lbl">Today's score</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="val" id="today-score-val"></span>
+      <span class="delta" id="today-score-delta"></span>
+    </div>
+  </div>
+
+<button class="save-btn" id="save-btn" onclick="saveEntry()">Log Today</button>
+
+  <div class="save-hint">You can log partial and return later</div>
+</div>
+
+<!-- ── VIEW: PORTFOLIO ── -->
+
+<div id="view-portfolio" class="view">
+  <!-- Hero -->
+  <div class="portfolio-hero">
+    <div style="font-size:12px;color:var(--text2);font-weight:500;margin-bottom:14px">7-Day Performance</div>
+    <div class="hero-inner">
+      <div class="ring-wrap">
+        <svg width="80" height="80" id="ring-svg" style="transform:rotate(-90deg)"></svg>
+        <div class="ring-score" id="ring-score-label">—</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-delta" id="hero-delta">—</div>
+        <div class="hero-sub">vs your baseline</div>
+        <div style="margin-top:8px"><span class="status-pill" id="hero-pill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drinks budget -->
+
+  <div class="stat-card">
+    <div class="budget-header">
+      <span class="stat-title" style="margin-bottom:0">Weekly Drinks</span>
+      <span class="budget-val" id="budget-val"></span>
+    </div>
+    <div class="budget-track"><div class="budget-fill" id="budget-fill"></div></div>
+    <div class="budget-hint" id="budget-hint"></div>
+  </div>
+
+  <!-- Daily scores -->
+
+  <div class="stat-card">
+    <div class="stat-title">Daily Scores</div>
+    <div id="daily-scores"></div>
+  </div>
+
+  <!-- Pillar breakdown -->
+
+  <div class="stat-card">
+    <div class="stat-title">Pillar Breakdown</div>
+    <div id="pillar-breakdown"></div>
+  </div>
+</div>
+
+<!-- ── VIEW: HISTORY ── -->
+
+<div id="view-history" class="view">
+  <div class="history-header">
+    <span class="history-count" id="history-count">0 days logged</span>
+    <button class="backup-btn" onclick="openDataModal()">💾 Backup / Restore</button>
+  </div>
+  <div id="history-list"></div>
+  <button class="reset-btn" onclick="resetData()">Reset All Data</button>
+</div>
+
+<!-- ── BOTTOM TAB BAR ── -->
+
+<div id="tabbar">
+  <button class="nav-btn" onclick="switchView('today')">
+    <div class="nav-dot active" id="dot-today"></div>
+    <span class="nav-label active" id="lbl-today">Log</span>
+  </button>
+  <button class="nav-btn" onclick="switchView('portfolio')">
+    <div class="nav-dot" id="dot-portfolio"></div>
+    <span class="nav-label" id="lbl-portfolio">Portfolio</span>
+  </button>
+  <button class="nav-btn" onclick="switchView('history')">
+    <div class="nav-dot" id="dot-history"></div>
+    <span class="nav-label" id="lbl-history">History</span>
+  </button>
+</div>
+
+<!-- ── DEFINITION MODAL ── -->
+
+<div class="modal-overlay" id="def-modal" onclick="closeDefModal()">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="drag-handle"></div>
+    <div class="modal-header">
+      <div class="modal-icon" id="def-icon"></div>
+      <div>
+        <div class="modal-title" id="def-title"></div>
+        <div class="modal-sub"  id="def-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeDefModal()">✕</button>
+    </div>
+    <p class="modal-body" id="def-body"></p>
+  </div>
+</div>
+
+<!-- ── DATA MODAL ── -->
+
+<div class="modal-overlay" id="data-modal" onclick="closeDataModal()">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="drag-handle"></div>
+    <div style="font-size:17px;font-weight:700;margin-bottom:6px">Data Management</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5">
+      Export your data before clearing cache or switching devices. Import to restore a backup.
+    </div>
+    <button class="data-action primary" onclick="exportData()">⬇ Export data as JSON</button>
+    <button class="data-action secondary" onclick="document.getElementById('import-file').click()">⬆ Import from backup</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)" />
+    <div id="import-feedback" class="import-feedback"></div>
+    <div class="divider"></div>
+    <button class="data-action danger" onclick="resetData()">⚠ Reset all data</button>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────────────────────────────────────
+const METRICS = [
+  { id:"sleep",    label:"Sleep",              sub:"Last night",             pillar:"body",   type:"number", unit:"hrs", weight:1.5, baseline:7,    icon:"🌙", definition:"Hours from lights out to alarm — log what happened last night. Target is 7.5hrs. The app tracks your 7-day rolling average, so one bad night doesn't define the week." },
+  { id:"drinks",   label:"Drinks",             sub:"Today's count",          pillar:"body",   type:"number", unit:"",   weight:1.5, baseline:2,    icon:"💧", definition:"Total standard drinks today. Weekly budget is 10. You'll see your running total live. A heavy wedding weekend is a drawdown — the question is how fast you recover." },
+  { id:"trained",  label:"Trained",            sub:"20+ min movement",       pillar:"body",   type:"bool",   weight:1.5, baseline:0.6,  icon:"⚡", definition:"20+ minutes of intentional movement. Hotel gym counts. A 30-min ride counts. A walk does not, unless it was genuinely all you had." },
+  { id:"ate",      label:"Ate Intentionally",  sub:"2 protein-focused choices", pillar:"body", type:"bool",  weight:1.0, baseline:0.7,  icon:"🌿", definition:"You made at least two conscious food choices with protein in mind. Doesn't require logging. Just: did you think about it, or did food just happen to you?" },
+  { id:"focus",    label:"Deep Focus",         sub:"45+ min uninterrupted",  pillar:"mind",   type:"bool",   weight:1.0, baseline:0.65, icon:"🎯", definition:"One uninterrupted block of 45+ minutes. Phone face-down, no Slack, working on something that actually matters. One block. That's the whole ask." },
+  { id:"alarm",    label:"First Alarm",        sub:"No snooze",              pillar:"spirit", type:"bool",   weight:1.0, baseline:0.55, icon:"⏰", definition:"Up on the first alarm, no snooze. When this slips during a hectic stretch, the other discipline habits usually follow. It's a leading indicator." },
+  { id:"tefillin", label:"Tefillin",           sub:"Daily anchor",           pillar:"spirit", type:"bool",   weight:1.0, baseline:0.75, icon:"✦",  definition:"You know what this means. This is your identity anchor — the habit that, when you skip during a chaotic stretch, you feel the drift most." },
+  { id:"phone",    label:"Phone Down",         sub:"30 min before sleep",    pillar:"spirit", type:"bool",   weight:1.0, baseline:0.5,  icon:"📵", definition:"Phone left your hand at least 30 minutes before you fell asleep. Plugged in across the room and reading counts. Scrolling in bed does not." },
+];
+
+const PILLARS = {
+  body:   { label:"Body",   color:"#007AFF" },
+  mind:   { label:"Mind",   color:"#30B0C7" },
+  spirit: { label:"Spirit", color:"#5856D6" },
+};
+
+const WEEKLY_BUDGET = 10;
+const STORAGE_KEY   = "lp90_v3";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCORING
+// ─────────────────────────────────────────────────────────────────────────────
+function scoreEntry(entry) {
+  if (!entry) return null;
+  let total = 0, max = 0;
+  METRICS.forEach(m => {
+    max += m.weight * 100;
+    const v = entry[m.id];
+    if (v === undefined || v === null || v === "") return;
+    if (m.type === "bool")        total += v ? m.weight * 100 : 0;
+    else if (m.id === "drinks")   total += Math.max(0, 100 - v * 16.67) * m.weight;
+    else if (m.id === "sleep")    total += Math.min(100, Math.max(0, ((v - 4.5) / 3) * 100)) * m.weight;
+  });
+  return max > 0 ? Math.round((total / max) * 100) : null;
+}
+
+const BASELINE = (() => {
+  let total = 0, max = 0;
+  METRICS.forEach(m => {
+    max += m.weight * 100;
+    if (m.type === "bool")      total += m.baseline * m.weight * 100;
+    else if (m.id === "drinks") total += Math.max(0, 100 - m.baseline * 16.67) * m.weight;
+    else if (m.id === "sleep")  total += Math.min(100, Math.max(0, ((m.baseline - 4.5) / 3) * 100)) * m.weight;
+  });
+  return Math.round((total / max) * 100);
+})();
+
+function scoreColor(s) {
+  if (s === null) return "var(--text3)";
+  if (s >= BASELINE + 10) return "var(--green)";
+  if (s >= BASELINE)      return "var(--blue)";
+  if (s >= BASELINE - 15) return "var(--orange)";
+  return "var(--red)";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DATE HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+function last7Keys() {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().slice(0, 10);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let STATE = (() => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { entries: {}, startDate: new Date().toISOString() };
+})();
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch(e) {}
+}
+
+function getEntry() { return STATE.entries[todayKey()] || {}; }
+
+function setField(id, val) {
+  const k = todayKey();
+  if (!STATE.entries[k]) STATE.entries[k] = {};
+  STATE.entries[k][id] = val;
+  save();
+  renderLog();
+  renderHeader();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EXPORT / IMPORT
+// ─────────────────────────────────────────────────────────────────────────────
+function exportData() {
+  const payload = { version:1, exportedAt: new Date().toISOString(), ...STATE };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = `life-portfolio-${todayKey()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(e) {
+  const file = e.target.files?.[0]; if (!file) return;
+  const reader = new FileReader();
+  const fb = document.getElementById("import-feedback");
+  reader.onload = (ev) => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (!parsed.entries || !parsed.startDate) throw new Error("Invalid format");
+      STATE = { entries: parsed.entries, startDate: parsed.startDate };
+      save(); renderAll();
+      fb.className = "import-feedback success";
+      fb.textContent = "✓ Imported " + Object.keys(parsed.entries).length + " days of data.";
+    } catch(err) {
+      fb.className = "import-feedback error";
+      fb.textContent = "✗ Could not parse file. Make sure it's a valid JSON export.";
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (!confirm("This will permanently delete all your data. Are you sure?")) return;
+  STATE = { entries: {}, startDate: new Date().toISOString() };
+  save(); renderAll(); closeDataModal();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
+let currentView = "today";
+
+function switchView(v) {
+  currentView = v;
+  ["today","portfolio","history"].forEach(name => {
+    document.getElementById("view-" + name).classList.toggle("active", name === v);
+    document.querySelector(`[onclick="switchView('${name}')"]`)
+      ?.classList.toggle("active", name === v);
+    document.getElementById("dot-" + name).classList.toggle("active", name === v);
+    document.getElementById("lbl-" + name).classList.toggle("active", name === v);
+  });
+  if (v === "portfolio") renderPortfolio();
+  if (v === "history")   renderHistory();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER: HEADER
+// ─────────────────────────────────────────────────────────────────────────────
+function renderHeader() {
+  const keys7   = last7Keys();
+  const scores7 = keys7.map(k => scoreEntry(STATE.entries[k]));
+  const valid7  = scores7.filter(s => s !== null);
+  const avg7    = valid7.length > 0 ? Math.round(valid7.reduce((a,b) => a+b, 0) / valid7.length) : null;
+  const vs      = avg7 !== null ? avg7 - BASELINE : null;
+
+  // Day counter
+  const elapsed = Math.min(90, Math.max(1,
+    Math.floor((Date.now() - new Date(STATE.startDate)) / 86400000) + 1));
+  const left = Math.max(0, 91 - elapsed);
+
+  document.getElementById("day-label").textContent   = `Day ${elapsed} of 90`;
+  document.getElementById("days-left").textContent   = left;
+
+  const scoreEl = document.getElementById("avg-score");
+  const denomEl = document.getElementById("avg-denom");
+  if (avg7 !== null) {
+    scoreEl.textContent = avg7;
+    scoreEl.style.color = scoreColor(avg7);
+    denomEl.textContent = " / 100";
+  } else {
+    scoreEl.textContent = "—";
+    scoreEl.style.color = "var(--text3)";
+    denomEl.textContent = "";
+  }
+
+  // Status pill
+  const pillEl = document.getElementById("status-pill");
+  const vsEl   = document.getElementById("vs-label");
+  if (vs !== null) {
+    const cfg = statusConfig(vs);
+    pillEl.textContent = cfg.label;
+    pillEl.style.background = cfg.bg;
+    pillEl.style.color = cfg.color;
+    vsEl.textContent = (vs > 0 ? "+" : "") + vs + " vs baseline";
+    vsEl.style.color = vs >= 0 ? "var(--blue)" : "var(--orange)";
+  } else {
+    pillEl.textContent = ""; vsEl.textContent = "";
+  }
+
+  // Sparkline
+  renderSparkline(keys7, scores7);
+}
+
+function statusConfig(vs) {
+  if (vs >= 15)  return { label:"Outperforming", bg:"#E8FAF0", color:"var(--green)" };
+  if (vs >= 5)   return { label:"Above baseline", bg:"#EBF4FF", color:"var(--blue)" };
+  if (vs >= -5)  return { label:"On track",       bg:"#FFF5E6", color:"var(--orange)" };
+  if (vs >= -15) return { label:"Minor drawdown", bg:"#FFF0EE", color:"var(--red)" };
+  return             { label:"Recovering",      bg:"#FFF0EE", color:"var(--red)" };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER: SPARKLINE
+// ─────────────────────────────────────────────────────────────────────────────
+function renderSparkline(keys7, scores7) {
+  const svg  = document.getElementById("sparkline-svg");
+  const wrap = document.getElementById("sparkline-wrap");
+  const W    = Math.min(340, wrap.offsetWidth || 320);
+  const H    = 44, pad = 4;
+  svg.setAttribute("width", W);
+
+  const valid = scores7.filter(s => s !== null);
+  const DAY_NAMES = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+  const today = todayKey();
+
+  // Day labels
+  const labelsEl = document.getElementById("day-labels");
+  labelsEl.style.maxWidth = W + "px";
+  labelsEl.innerHTML = keys7.map((k, i) => {
+    const isToday = k === today;
+    const dayName = DAY_NAMES[new Date(k + "T12:00:00").getDay()];
+    return `<span class="${isToday ? "today" : ""}" style="width:${W/7}px">${dayName}</span>`;
+  }).join("");
+
+  if (valid.length < 2) { svg.innerHTML = ""; return; }
+
+  const allVals = [...valid, BASELINE];
+  const min = Math.min(...allVals) - 8;
+  const max = Math.max(...allVals) + 8;
+  const range = max - min;
+
+  const pts = scores7.map((s, i) => ({
+    x: pad + (i / (scores7.length - 1)) * (W - pad * 2),
+    y: s !== null ? H - pad - ((s - min) / range) * (H - pad * 2) : null,
+    s,
+  }));
+
+  const baseY   = H - pad - ((BASELINE - min) / range) * (H - pad * 2);
+  const linePts = pts.filter(p => p.y !== null);
+  const path    = linePts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  const area    = `${path} L${linePts[linePts.length-1].x},${H} L${linePts[0].x},${H} Z`;
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#007AFF" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#007AFF" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="${pad}" y1="${baseY}" x2="${W-pad}" y2="${baseY}"
+      stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>
+    <path d="${area}" fill="url(#sg)"/>
+    <path d="${path}" fill="none" stroke="#007AFF" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map(p => p.y !== null
+      ? `<circle cx="${p.x}" cy="${p.y}" r="3"
+          fill="${p.s >= BASELINE ? "#007AFF" : "#FF9500"}"
+          stroke="white" stroke-width="1.5"/>`
+      : "").join("")}
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER: LOG VIEW
+// ─────────────────────────────────────────────────────────────────────────────
+function renderLog() {
+  const entry = getEntry();
+
+  // Date label + progress
+  const answered = METRICS.filter(m =>
+    entry[m.id] !== undefined && entry[m.id] !== null && entry[m.id] !== "").length;
+  document.getElementById("today-date-label").textContent =
+    new Date().toLocaleDateString("en-US",
+      { weekday:"long", month:"long", day:"numeric" }) +
+    ` · ${answered}/${METRICS.length} logged`;
+  document.getElementById("prog-fill").style.width =
+    `${(answered / METRICS.length) * 100}%`;
+
+  // Build each pillar group
+  ["body","mind","spirit"].forEach(pillar => {
+    const el = document.getElementById("group-" + pillar);
+    const pMetrics = METRICS.filter(m => m.pillar === pillar);
+    el.innerHTML = pMetrics.map((m, idx) => buildMetricRow(m, entry, idx, pMetrics.length)).join("");
+  });
+
+  // Today's score preview
+  const ts = scoreEntry(entry);
+  const preview = document.getElementById("score-preview");
+  if (ts !== null) {
+    preview.style.display = "flex";
+    const delta = ts - BASELINE;
+    document.getElementById("today-score-val").textContent = ts;
+    document.getElementById("today-score-val").style.color = scoreColor(ts);
+    document.getElementById("today-score-delta").textContent =
+      (delta >= 0 ? "+" : "") + delta + " vs baseline";
+    document.getElementById("today-score-delta").style.color =
+      delta >= 0 ? "var(--blue)" : "var(--orange)";
+  } else {
+    preview.style.display = "none";
+  }
+
+  // Save button label
+  const btn = document.getElementById("save-btn");
+  btn.textContent = answered === METRICS.length
+    ? "Log Today"
+    : `Log Today (${answered}/${METRICS.length})`;
+}
+
+function buildMetricRow(m, entry, idx, total) {
+  const val      = entry[m.id];
+  const answered = val !== undefined && val !== null && val !== "";
+  const last     = idx === total - 1;
+
+  let inputHTML = "";
+  if (m.type === "bool") {
+    const yesActive = val === true;
+    const noActive  = val === false;
+    inputHTML = `
+      <div class="bool-wrap">
+        <button class="bool-btn ${yesActive ? "yes-active" : ""}"
+          onclick="setField('${m.id}', true)">
+          ${yesActive ? "✓ " : ""}Yes
+        </button>
+        <button class="bool-btn ${noActive ? "no-active" : ""}"
+          onclick="setField('${m.id}', false)">
+          No
+        </button>
+      </div>`;
+  } else {
+    const v = val ?? "";
+    let hint = "";
+    if (m.id === "sleep" && answered) {
+      hint = val >= 7.5 ? `<span class="stepper-hint" style="color:var(--green)">On target</span>`
+           : val >= 6   ? `<span class="stepper-hint" style="color:var(--orange)">Below target</span>`
+           :               `<span class="stepper-hint" style="color:var(--red)">Low</span>`;
+    }
+    const step   = m.id === "sleep" ? 0.5 : 1;
+    const decVal = Math.max(0, (parseFloat(v) || 0) - step);
+    const incVal = (parseFloat(v) || 0) + step;
+    inputHTML = `
+      <div class="stepper-wrap">
+        <div class="stepper ${answered ? "has-val" : ""}">
+          <button class="stepper-btn" onclick="setField('${m.id}', ${decVal})">−</button>
+          <input type="number" value="${v}" placeholder="—" min="0"
+            step="${step}"
+            onchange="setField('${m.id}', this.value === '' ? '' : parseFloat(this.value))"
+            oninput="setField('${m.id}', this.value === '' ? '' : parseFloat(this.value))" />
+          <button class="stepper-btn" onclick="setField('${m.id}', ${incVal})">+</button>
+        </div>
+        <span class="stepper-unit">${m.unit}</span>
+        ${hint}
+      </div>`;
+  }
+
+  return `
+    <div class="metric-row" style="${last ? "border-bottom:none" : ""}">
+      <div class="metric-header">
+        <div class="metric-icon ${answered ? "answered" : ""}">${m.icon}</div>
+        <div>
+          <div class="metric-title">${m.label}</div>
+          <div class="metric-sub">${m.sub}</div>
+        </div>
+        <button class="info-btn" onclick="openDefModal('${m.id}')">ⓘ</button>
+      </div>
+      <div class="metric-input">${inputHTML}</div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SAVE
+// ─────────────────────────────────────────────────────────────────────────────
+function saveEntry() {
+  const k = todayKey();
+  if (!STATE.entries[k]) STATE.entries[k] = {};
+  STATE.entries[k]._saved = true;
+  save();
+
+  const btn = document.getElementById("save-btn");
+  btn.textContent = "✓ Logged";
+  btn.classList.add("saved");
+  setTimeout(() => {
+    btn.classList.remove("saved");
+    switchView("portfolio");
+  }, 800);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER: PORTFOLIO
+// ─────────────────────────────────────────────────────────────────────────────
+function renderPortfolio() {
+  const keys7   = last7Keys();
+  const scores7 = keys7.map(k => scoreEntry(STATE.entries[k]));
+  const valid7  = scores7.filter(s => s !== null);
+  const avg7    = valid7.length > 0
+    ? Math.round(valid7.reduce((a,b) => a+b, 0) / valid7.length) : null;
+  const vs      = avg7 !== null ? avg7 - BASELINE : null;
+  const today   = todayKey();
+
+  // Ring
+  const ringEl  = document.getElementById("ring-svg");
+  const ringLbl = document.getElementById("ring-score-label");
+  const r = 35, circ = 2 * Math.PI * r;
+  const scoreOff = avg7 !== null ? circ - (avg7 / 100) * circ : circ;
+  const baseOff  = circ - (BASELINE / 100) * circ;
+  ringEl.innerHTML = `
+    <circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--border)" stroke-width="6"/>
+    <circle cx="40" cy="40" r="${r}" fill="none" stroke="#007AFF30"
+      stroke-width="6" stroke-dasharray="${circ}" stroke-dashoffset="${baseOff}"
+      stroke-linecap="round"/>
+    ${avg7 !== null ? `
+    <circle cx="40" cy="40" r="${r}" fill="none" stroke="${scoreColor(avg7)}"
+      stroke-width="6" stroke-dasharray="${circ}" stroke-dashoffset="${scoreOff}"
+      stroke-linecap="round"/>` : ""}
+  `;
+  ringLbl.textContent = avg7 ?? "—";
+  ringLbl.style.color = scoreColor(avg7);
+
+  // Hero delta
+  const deltaEl = document.getElementById("hero-delta");
+  deltaEl.textContent = vs !== null ? (vs > 0 ? "+" : "") + vs : "—";
+  deltaEl.style.color = vs !== null ? (vs >= 0 ? "var(--blue)" : "var(--orange)") : "var(--text3)";
+
+  const heroPill = document.getElementById("hero-pill");
+  if (vs !== null) {
+    const cfg = statusConfig(vs);
+    heroPill.textContent = cfg.label;
+    heroPill.style.background = cfg.bg;
+    heroPill.style.color = cfg.color;
+  } else {
+    heroPill.textContent = "";
+  }
+
+  // Drinks budget
+  const weekDrinks = keys7.reduce((s, k) =>
+    s + (STATE.entries[k]?.drinks ? Number(STATE.entries[k].drinks) : 0), 0);
+  const budgetColor = weekDrinks > WEEKLY_BUDGET ? "var(--red)"
+                    : weekDrinks > 7 ? "var(--orange)" : "var(--green)";
+  document.getElementById("budget-val").textContent  = weekDrinks + " / " + WEEKLY_BUDGET;
+  document.getElementById("budget-val").style.color  = budgetColor;
+  document.getElementById("budget-fill").style.width =
+    Math.min(100, (weekDrinks / WEEKLY_BUDGET) * 100) + "%";
+  document.getElementById("budget-fill").style.background = budgetColor;
+  document.getElementById("budget-hint").textContent =
+    WEEKLY_BUDGET - weekDrinks > 0
+      ? `${WEEKLY_BUDGET - weekDrinks} remaining this week`
+      : "Over weekly budget — recovery week";
+
+  // Daily scores
+  const DAY_NAMES = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+  document.getElementById("daily-scores").innerHTML = keys7.map((k, i) => {
+    const s       = scores7[i];
+    const isToday = k === today;
+    const lbl     = new Date(k + "T12:00:00")
+      .toLocaleDateString("en-US", { weekday:"short", month:"numeric", day:"numeric" });
+    return `
+      <div class="bar-row">
+        <span class="bar-label ${isToday ? "today" : ""}">${lbl}</span>
+        <div class="bar-track">
+          ${s !== null
+            ? `<div class="bar-fill" style="width:${s}%;background:${scoreColor(s)}"></div>`
+            : ""}
+        </div>
+        <span class="bar-val" style="color:${scoreColor(s)}">${s ?? "—"}</span>
+      </div>`;
+  }).join("");
+
+  // Pillar breakdown
+  document.getElementById("pillar-breakdown").innerHTML =
+    Object.entries(PILLARS).map(([key, pillar]) => {
+      const pMetrics = METRICS.filter(m => m.pillar === key);
+      let t = 0, c = 0;
+      keys7.forEach(k => {
+        const e = STATE.entries[k]; if (!e) return;
+        pMetrics.forEach(m => {
+          const v = e[m.id];
+          if (v === undefined || v === null || v === "") return;
+          if (m.type === "bool")      { t += v ? 100 : 0; c++; }
+          else if (m.id === "drinks") { t += Math.max(0, 100 - v * 16.67); c++; }
+          else if (m.id === "sleep")  { t += Math.min(100, Math.max(0, ((v-4.5)/3)*100)); c++; }
+        });
+      });
+      const avg = c > 0 ? Math.round(t / c) : null;
+      return `
+        <div class="pillar-row">
+          <div class="pillar-header">
+            <span class="pillar-name" style="color:${pillar.color}">${pillar.label}</span>
+            <span class="pillar-score" style="color:${scoreColor(avg)}">${avg ?? "—"}</span>
+          </div>
+          <div class="pillar-track">
+            ${avg !== null
+              ? `<div class="pillar-fill" style="width:${avg}%;background:${pillar.color}"></div>`
+              : ""}
+          </div>
+        </div>`;
+    }).join("");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER: HISTORY
+// ─────────────────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const today   = todayKey();
+  const entries = Object.entries(STATE.entries).sort(([a],[b]) => b.localeCompare(a));
+
+  document.getElementById("history-count").textContent =
+    entries.length + " day" + (entries.length !== 1 ? "s" : "") + " logged";
+
+  if (entries.length === 0) {
+    document.getElementById("history-list").innerHTML = `
+      <div class="empty-state">
+        <div class="emoji">📋</div>
+        <p>No entries yet — log your first day to get started.</p>
+      </div>`;
+    return;
+  }
+
+  document.getElementById("history-list").innerHTML = entries.map(([k, e]) => {
+    const s       = scoreEntry(e);
+    const isToday = k === today;
+    const lbl     = new Date(k + "T12:00:00")
+      .toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+    const chips   = METRICS.map(m => {
+      const v = e[m.id];
+      if (v === undefined || v === null || v === "") return "";
+      const good = m.type === "bool" ? v : m.id === "sleep" ? v >= 7 : v <= 2;
+      const txt  = m.type === "bool"
+        ? (v ? "✓" : "✗")
+        : `${v}${m.unit}`;
+      return `<span class="chip ${good ? "good" : "bad"}">${m.label.split(" ")[0]}: ${txt}</span>`;
+    }).join("");
+
+    return `
+      <div class="history-item">
+        <div class="left">
+          <div class="date ${isToday ? "today" : ""}">${lbl}${isToday ? " · Today" : ""}</div>
+          <div class="history-chips">${chips}</div>
+        </div>
+        <div class="history-score">
+          <div class="val" style="color:${scoreColor(s)}">${s ?? "—"}</div>
+          <div class="lbl">score</div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODALS
+// ─────────────────────────────────────────────────────────────────────────────
+function openDefModal(metricId) {
+  const m = METRICS.find(x => x.id === metricId);
+  document.getElementById("def-icon").textContent  = m.icon;
+  document.getElementById("def-title").textContent = m.label;
+  document.getElementById("def-sub").textContent   = m.sub;
+  document.getElementById("def-body").textContent  = m.definition;
+  document.getElementById("def-modal").classList.add("open");
+}
+function closeDefModal() {
+  document.getElementById("def-modal").classList.remove("open");
+}
+
+function openDataModal() {
+  document.getElementById("import-feedback").className = "import-feedback";
+  document.getElementById("data-modal").classList.add("open");
+}
+function closeDataModal() {
+  document.getElementById("data-modal").classList.remove("open");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FULL RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderHeader();
+  renderLog();
+  if (currentView === "portfolio") renderPortfolio();
+  if (currentView === "history")   renderHistory();
+}
+
+// Boot
+renderAll();
+
+// Re-render sparkline on resize
+window.addEventListener("resize", () => {
+  const keys7   = last7Keys();
+  const scores7 = keys7.map(k => scoreEntry(STATE.entries[k]));
+  renderSparkline(keys7, scores7);
+});
+</script>
+
+</body>
+</html>
