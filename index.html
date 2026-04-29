@@ -262,6 +262,11 @@
 .dpis{font-size:11px;color:var(--text3);margin-top:1px;}
 .diw{width:44px;height:44px;border-radius:14px;background:rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .sclose{margin-left:auto;background:var(--bg3);border:none;border-radius:100px;width:28px;height:28px;font-size:15px;color:var(--text2);display:flex;align-items:center;justify-content:center;}
+
+/* Settings */
+.dur-btn{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text2);transition:all .15s;}
+.dur-btn.a{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:var(--blue);}
+.dur-btn:active{opacity:.7;}
 ```
 
   </style>
@@ -275,7 +280,7 @@
   <div class="gc">
     <div class="g-time" id="g-time"></div>
     <div class="g-sal" id="g-sal"></div>
-    <div class="g-name">Eli.</div>
+    <div class="g-name" id="g-name">Eli.</div>
     <div class="g-div"></div>
     <div class="g-stats">
       <div><div class="g-sv" id="g-left">—</div><div class="g-sl">Days Left</div></div>
@@ -385,6 +390,130 @@
     <div class="hist-body" style="padding-top:16px" id="hlist"></div>
   </div>
 
+  <!-- SETTINGS VIEW -->
+
+  <div id="view-settings" class="view">
+    <div class="hist-hero" style="padding-bottom:24px">
+      <div style="position:relative">
+        <div class="hist-hero-title">Settings</div>
+        <div class="hist-hero-sub">Your challenge, your rules</div>
+      </div>
+    </div>
+    <div style="padding:0 20px">
+
+```
+  <!-- PROFILE -->
+  <div class="slbl" style="color:var(--blue)">Profile</div>
+  <div class="mgrp" style="margin-bottom:20px">
+    <div class="mrow" style="border-bottom:none;padding:0">
+      <div class="mtop">
+        <div class="mico on">👤</div>
+        <div style="flex:1"><div class="mlbl">Your Name</div><div class="msub">Shown on the greeting screen</div></div>
+      </div>
+      <div class="minp">
+        <input id="s-name" type="text" value="" placeholder="Your name"
+          style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:15px;font-weight:500;color:var(--text);outline:none;"
+          oninput="saveSetting('name', this.value)"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGE -->
+  <div class="slbl" style="color:var(--purple)">Challenge</div>
+  <div class="mgrp" style="margin-bottom:20px">
+
+    <!-- Start date -->
+    <div class="mrow">
+      <div class="mtop">
+        <div class="mico on">🚀</div>
+        <div style="flex:1"><div class="mlbl">Start Date</div><div class="msub" id="s-start-sub">Day 1 of your challenge</div></div>
+        <button onclick="openM('reset-start-modal')" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--blue)">Change</button>
+      </div>
+    </div>
+
+    <!-- Duration -->
+    <div class="mrow">
+      <div class="mtop">
+        <div class="mico on">🏁</div>
+        <div style="flex:1"><div class="mlbl">Duration</div><div class="msub" id="s-end-sub">Challenge end date</div></div>
+      </div>
+      <div class="minp">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="dur-btn" onclick="setDuration(30)">30 days</button>
+          <button class="dur-btn" onclick="setDuration(60)">60 days</button>
+          <button class="dur-btn a" onclick="setDuration(90)">90 days</button>
+          <button class="dur-btn" onclick="setDuration(0)">Custom</button>
+        </div>
+        <input id="s-custom-dur" type="number" inputmode="numeric" placeholder="Days" min="1" max="365"
+          style="display:none;margin-top:8px;width:120px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:15px;font-weight:500;color:var(--text);outline:none;"
+          oninput="saveSetting('duration', parseInt(this.value)||90)"/>
+      </div>
+    </div>
+
+    <!-- Progress summary -->
+    <div class="mrow" style="border-bottom:none">
+      <div class="mtop" style="padding-bottom:14px">
+        <div class="mico">📈</div>
+        <div style="flex:1"><div class="mlbl">Progress</div></div>
+      </div>
+      <div class="minp" style="padding-top:0">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div style="background:var(--bg3);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)">
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--blue)" id="s-elapsed">—</div>
+            <div style="font-family:var(--font-m);font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:3px">ELAPSED</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)">
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--purple)" id="s-remaining">—</div>
+            <div style="font-family:var(--font-m);font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:3px">REMAINING</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)">
+            <div style="font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--green)" id="s-logged">—</div>
+            <div style="font-family:var(--font-m);font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:3px">LOGGED</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCIPLINE (hard to change) -->
+  <div class="slbl" style="color:var(--orange)">Discipline</div>
+  <div class="mgrp" style="margin-bottom:20px">
+    <div class="mrow" style="border-bottom:none">
+      <div class="mtop">
+        <div class="mico">🍷</div>
+        <div style="flex:1">
+          <div class="mlbl">Weekly Drink Budget</div>
+          <div class="msub">Currently <span id="s-budget-val" style="color:var(--orange);font-weight:600">10</span> drinks/week</div>
+        </div>
+        <button onclick="openBudgetModal()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--text2)">Adjust</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div class="slbl" style="color:var(--text3)">Data</div>
+  <div class="mgrp" style="margin-bottom:32px">
+    <div class="mrow">
+      <div class="mtop" style="padding-bottom:14px">
+        <div class="mico">💾</div>
+        <div style="flex:1"><div class="mlbl">Backup & Restore</div><div class="msub">Export or import your data</div></div>
+        <button onclick="openM('dm')" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--blue)">Open</button>
+      </div>
+    </div>
+    <div class="mrow" style="border-bottom:none">
+      <div class="mtop" style="padding-bottom:14px">
+        <div class="mico">🗑</div>
+        <div style="flex:1"><div class="mlbl">Reset All Data</div><div class="msub">Permanently clears all entries</div></div>
+        <button onclick="openResetModal()" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--red)">Reset</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+```
+
+  </div>
+
 </div>
 
 <!-- TAB BAR -->
@@ -393,6 +522,7 @@
   <button class="nb a" id="nb-today" onclick="sv('today')"><div class="ni">✏️</div><div class="nl">Log</div></button>
   <button class="nb" id="nb-portfolio" onclick="sv('portfolio')"><div class="ni">📊</div><div class="nl">Portfolio</div></button>
   <button class="nb" id="nb-history" onclick="sv('history')"><div class="ni">📅</div><div class="nl">History</div></button>
+  <button class="nb" id="nb-settings" onclick="sv('settings')"><div class="ni">⚙️</div><div class="nl">Settings</div></button>
 </div>
 
 <!-- DEF MODAL -->
@@ -445,8 +575,52 @@
     <button class="sact" style="background:var(--bg3);color:var(--text);border:1px solid var(--border)" onclick="document.getElementById('csv-import').click()">⬆ Import from CSV</button>
     <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)"/>
     <div id="import-feedback" style="display:none;font-size:13px;padding:10px 14px;border-radius:10px;margin-bottom:8px;font-weight:500"></div>
-    <div class="sdiv"></div>
-    <button class="sact d" onclick="resetAll()">⚠ Reset all data</button>
+  </div>
+</div>
+
+<!-- RESET START DATE MODAL -->
+
+<div class="ov" id="reset-start-modal" onclick="closeM('reset-start-modal')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="shandle"></div>
+    <div class="stit">Change Start Date</div>
+    <div class="ssub">Pick the date your challenge actually began. Your day counter and countdown will update immediately.</div>
+    <div style="margin-bottom:16px">
+      <input type="date" id="s-start-input"
+        style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:16px;font-weight:500;color:var(--text);outline:none;font-family:var(--font-b)"/>
+    </div>
+    <button class="cbtn d" style="background:var(--blue);box-shadow:0 4px 20px rgba(59,130,246,.3)" onclick="confirmStartDate()">Confirm Start Date</button>
+    <button class="cbtn c" onclick="closeM('reset-start-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- BUDGET MODAL (deliberately friction-heavy) -->
+
+<div class="ov" id="budget-modal" onclick="closeM('budget-modal')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="shandle"></div>
+    <div class="stit">Adjust Drink Budget</div>
+    <div class="ssub">Your current budget is <strong id="bm-current" style="color:var(--orange)"></strong> drinks per week.<br><br>This was set intentionally. Lowering it increases discipline. Raising it lowers the bar. Think carefully.</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button onclick="adjBudget(-1)" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;width:44px;height:44px;font-size:22px;color:var(--text2);display:flex;align-items:center;justify-content:center;">−</button>
+      <div style="flex:1;text-align:center;font-family:var(--font-d);font-size:36px;font-weight:700;color:var(--text)" id="bm-val"></div>
+      <button onclick="adjBudget(1)" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;width:44px;height:44px;font-size:22px;color:var(--text2);display:flex;align-items:center;justify-content:center;">+</button>
+    </div>
+    <div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:20px" id="bm-hint"></div>
+    <button class="cbtn d" id="bm-confirm" style="background:var(--orange);box-shadow:0 4px 20px rgba(249,115,22,.3);opacity:0.4;pointer-events:none" onclick="confirmBudget()">Hold to Confirm</button>
+    <button class="cbtn c" onclick="closeM('budget-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- RESET DATA CONFIRM -->
+
+<div class="ov" id="reset-data-modal" onclick="closeM('reset-data-modal')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="shandle"></div>
+    <div class="stit">Reset All Data?</div>
+    <div class="ssub">This permanently deletes all <strong id="rd-count"></strong> logged entries and resets your challenge. This cannot be undone.</div>
+    <button class="cbtn d" onclick="resetAll()">Yes, reset everything</button>
+    <button class="cbtn c" onclick="closeM('reset-data-modal')">Cancel</button>
   </div>
 </div>
 
@@ -462,7 +636,7 @@ const METRICS=[
   {id:"phone",   label:"Phone Down",        sub:"30 min before sleep",       pillar:"spirit",type:"bool",         weight:1.0,baseline:0.5, icon:"📵",def:"Phone left your hand at least 30 minutes before you fell asleep. Plugged in across the room counts. Scrolling in bed does not."},
 ];
 const PILLARS={body:{label:"Body",color:"#3b82f6"},mind:{label:"Mind",color:"#2dd4bf"},spirit:{label:"Spirit",color:"#a78bfa"}};
-const BUDGET=10,KEY="lp90_v6",FOLDER="18qfUCYa-lRiVZU5CETCw9qm22EzQwevn";
+const KEY="lp90_v6",FOLDER="18qfUCYa-lRiVZU5CETCw9qm22EzQwevn";
 const QUOTES=["The score isn't who you are. It's data.","Recovery is part of the plan.","One block of focus changes the day.","Small daily improvements compound.","Show up even when it's imperfect.","Drawdowns are temporary. Direction matters."];
 
 function sc(e){if(!e)return null;let t=0,m=0;METRICS.forEach(x=>{m+=x.weight*100;const v=e[x.id];if(v===undefined||v===null||v==="")return;if(x.type==="bool")t+=v?x.weight*100:0;else if(x.id==="drinks")t+=Math.max(0,100-v*16.67)*x.weight;else if(x.id==="sleep")t+=Math.min(100,Math.max(0,((v-4.5)/3)*100))*x.weight;});return m>0?Math.round((t/m)*100):null;}
@@ -488,11 +662,11 @@ function showG(){
   document.getElementById("g-time").textContent=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const k7=l7(),sc7=k7.map(k=>sc(S.entries[k])).filter(s=>s!==null);
   const avg=sc7.length?Math.round(sc7.reduce((a,b)=>a+b,0)/sc7.length):null;
-  const el=Math.min(90,Math.max(1,Math.floor((Date.now()-new Date(S.startDate))/86400000)+1));
-  document.getElementById("g-left").textContent=Math.max(0,91-el);
+  document.getElementById("g-left").textContent=getRemaining();
   document.getElementById("g-avg").textContent=avg??"—";
   document.getElementById("g-log").textContent=Object.keys(S.entries).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).length;
   document.getElementById("g-q").textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  const gn=document.getElementById("g-name");if(gn)gn.textContent=getUserName()+".";
 }
 function dismiss(){
   sessionStorage.setItem(SK,Date.now());
@@ -544,12 +718,19 @@ async function doDel(){if(!PDK)return;delete S.entries[PDK];if(PDK===AD){AD=tk()
 // NAV
 function sv(v){
   V=v;
-  ["today","portfolio","history"].forEach(n=>{
+  ["today","portfolio","history","settings"].forEach(n=>{
     document.getElementById("view-"+n).classList.toggle("a",n===v);
     document.getElementById("nb-"+n).classList.toggle("a",n===v);
   });
   if(v==="portfolio")rp();
   if(v==="history")rhist();
+  if(v==="settings"){
+    // Pre-populate start date picker with current value
+    const d=new Date(S.startDate);
+    const iso=d.toISOString().slice(0,10);
+    document.getElementById("s-start-input").value=iso;
+    rsettings();
+  }
 }
 function ptab(t){
   PTAB=t;
@@ -571,8 +752,8 @@ function rLogHero(){
   const ans=METRICS.filter(m=>D[m.id]!==undefined&&D[m.id]!==null&&D[m.id]!=="").length;
   document.getElementById("lh-meta").textContent=`${ans} of ${METRICS.length} logged`;
   document.getElementById("prog").style.width=`${(ans/METRICS.length)*100}%`;
-  const el=Math.min(90,Math.max(1,Math.floor((Date.now()-new Date(S.startDate))/86400000)+1));
-  document.getElementById("lh-dl").textContent=Math.max(0,91-el);
+  const el=getElapsed();
+  document.getElementById("lh-dl").textContent=getRemaining();
 }
 
 // LOG
@@ -614,7 +795,7 @@ function mrow(m,idx,total){
     const val=v??"",step=m.id==="sleep"?0.5:1,dec=Math.max(0,(parseFloat(val)||0)-step),inc=(parseFloat(val)||0)+step;
     let hint="";
     if(m.id==="sleep"&&ans)hint=`<span class="shint" style="color:${v>=7.5?"var(--green)":v>=6?"var(--orange)":"var(--red)"}">${v>=7.5?"On target":v>=6?"Below target":"Low"}</span>`;
-    if(m.id==="drinks"&&ans&&v>0){const wd=wkD();hint=`<span class="shint" style="color:${wd>BUDGET?"var(--red)":wd>7?"var(--orange)":"var(--text2)"}">${wd}/${BUDGET} wk</span>`;}
+    if(m.id==="drinks"&&ans&&v>0){const wd=wkD();hint=`<span class="shint" style="color:${wd>getBudget()?"var(--red)":wd>Math.round(getBudget()*.7)?"var(--orange)":"var(--text2)"}">${wd}/${BUDGET} wk</span>`;}
     inp=`<div class="srow"><div class="stpr ${ans?"on":""}"><button class="sbtn2" onclick="sf('${m.id}',${dec})">−</button><input class="sinp" type="number" inputmode="decimal" value="${val}" placeholder="—" step="${step}" min="0" onchange="sf('${m.id}',this.value===''?'':parseFloat(this.value))" oninput="sf('${m.id}',this.value===''?'':parseFloat(this.value))"/><button class="sbtn2" onclick="sf('${m.id}',${inc})">+</button></div><span class="sunit">${m.unit}</span>${hint}</div>`;
   }
   return `<div class="mrow" style="${last?"border-bottom:none":""}"><div class="mtop"><div class="mico ${ans?"on":""}">${m.icon}</div><div style="flex:1"><div class="mlbl">${m.label}</div><div class="msub">${m.sub}</div></div><button class="ibtn" onclick="oDef('${m.id}')">ⓘ</button></div><div class="minp">${inp}</div></div>`;
@@ -641,10 +822,10 @@ function rp(){
   rSpark(k7,s7);
 
   // Drinks
-  const bc=wd>BUDGET?"var(--red)":wd>7?"var(--orange)":"var(--green)";
+  const bc=wd>getBudget()?"var(--red)":wd>Math.round(getBudget()*.7)?"var(--orange)":"var(--green)";
   document.getElementById("bnum").textContent=wd;document.getElementById("bnum").style.color=bc;
-  document.getElementById("bfill").style.width=`${Math.min(100,(wd/BUDGET)*100)}%`;document.getElementById("bfill").style.background=bc;
-  document.getElementById("bhint").textContent=BUDGET-wd>0?`${BUDGET-wd} remaining this week`:"Over budget — recovery week";
+  document.getElementById("bfill").style.width=`${Math.min(100,(wd/getBudget())*100)}%`;document.getElementById("bfill").style.background=bc;
+  document.getElementById("bhint").textContent=getBudget()-wd>0?`${getBudget()-wd} remaining this week`:"Over budget — recovery week";
 
   // Daily scores
   document.getElementById("dscores").innerHTML=k7.map((k,i)=>{
@@ -761,10 +942,125 @@ function importCSV(e){
   e.target.value="";
 }
 
+// SETTINGS
+// Default profile — these live in localStorage alongside entries
+function loadProfile(){
+  try{const p=localStorage.getItem("lp90_profile");return p?JSON.parse(p):{name:"Eli",duration:90,budget:10};}
+  catch(e){return{name:"Eli",duration:90,budget:10};}
+}
+function saveProfile(p){try{localStorage.setItem("lp90_profile",JSON.stringify(p));}catch(e){}}
+
+let PROFILE=loadProfile();
+// Ensure start date is April 27 if it was set to today (first launch default)
+if(!S.startDate||S.startDate===new Date().toISOString()){
+  S.startDate="2026-04-27T00:00:00.000Z";ps();
+}
+
+function getDuration(){return PROFILE.duration||90;}
+function getBudget(){return PROFILE.budget||10;}
+function getUserName(){return PROFILE.name||"Eli";}
+
+function getElapsed(){
+  return Math.min(getDuration(),Math.max(1,Math.floor((Date.now()-new Date(S.startDate))/86400000)+1));
+}
+function getRemaining(){return Math.max(0,getDuration()-getElapsed()+1);}
+
+function saveSetting(key,val){PROFILE[key]=val;saveProfile(PROFILE);rsettings();}
+
+function setDuration(days){
+  document.querySelectorAll(".dur-btn").forEach(b=>b.classList.remove("a"));
+  const cust=document.getElementById("s-custom-dur");
+  if(days===0){
+    cust.style.display="block";cust.focus();
+    event.target.classList.add("a");
+  } else {
+    cust.style.display="none";
+    event.target.classList.add("a");
+    PROFILE.duration=days;saveProfile(PROFILE);rsettings();
+  }
+}
+
+function rsettings(){
+  // Populate name
+  const ni=document.getElementById("s-name");
+  if(ni&&ni!==document.activeElement)ni.value=getUserName();
+
+  // Start date sub
+  const sd=new Date(S.startDate+"").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const sel=document.getElementById("s-start-sub");
+  if(sel)sel.textContent="Started "+sd;
+
+  // Duration buttons
+  const dur=getDuration();
+  document.querySelectorAll(".dur-btn").forEach(b=>{
+    const t=b.textContent.trim();
+    const match=(t==="30 days"&&dur===30)||(t==="60 days"&&dur===60)||(t==="90 days"&&dur===90);
+    b.classList.toggle("a",match);
+    if(t==="Custom"&&![30,60,90].includes(dur))b.classList.add("a");
+  });
+
+  // End date
+  const endD=new Date(new Date(S.startDate).getTime()+(getDuration()-1)*86400000);
+  const endSub=document.getElementById("s-end-sub");
+  if(endSub)endSub.textContent="Ends "+endD.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+
+  // Progress grid
+  const el=getElapsed(),rem=getRemaining();
+  const logged=Object.keys(S.entries).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).length;
+  const se=document.getElementById("s-elapsed"),sr=document.getElementById("s-remaining"),sl=document.getElementById("s-logged");
+  if(se)se.textContent=el;if(sr)sr.textContent=rem;if(sl)sl.textContent=logged;
+
+  // Budget
+  const bv=document.getElementById("s-budget-val");
+  if(bv)bv.textContent=getBudget();
+}
+
+// Start date confirm
+function confirmStartDate(){
+  const inp=document.getElementById("s-start-input").value;
+  if(!inp)return;
+  S.startDate=new Date(inp+"T00:00:00.000Z").toISOString();
+  ps();rsettings();ra();
+  closeM("reset-start-modal");
+}
+
+// Budget modal
+let BM_VAL=10;
+function openBudgetModal(){
+  BM_VAL=getBudget();
+  document.getElementById("bm-current").textContent=getBudget();
+  updateBudgetModal();
+  openM("budget-modal");
+  // Reset confirm button — requires sitting with it for 3s
+  const btn=document.getElementById("bm-confirm");
+  btn.style.opacity="0.4";btn.style.pointerEvents="none";btn.textContent="Hold to Confirm";
+  setTimeout(()=>{btn.style.opacity="1";btn.style.pointerEvents="auto";btn.textContent="Confirm Change";},3000);
+}
+function adjBudget(d){BM_VAL=Math.max(1,Math.min(30,BM_VAL+d));updateBudgetModal();}
+function updateBudgetModal(){
+  document.getElementById("bm-val").textContent=BM_VAL;
+  const diff=BM_VAL-getBudget();
+  const hint=diff===0?"No change from current budget":diff>0?`↑ ${diff} more than current — easier`:`↓ ${Math.abs(diff)} fewer than current — harder`;
+  document.getElementById("bm-hint").textContent=hint;
+  document.getElementById("bm-hint").style.color=diff>0?"var(--orange)":diff<0?"var(--green)":"var(--text3)";
+}
+function confirmBudget(){PROFILE.budget=BM_VAL;saveProfile(PROFILE);rsettings();closeM("budget-modal");}
+
+// Reset data confirm
+function openResetModal(){
+  const n=Object.keys(S.entries).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).length;
+  document.getElementById("rd-count").textContent=n+" day"+(n!==1?"s":"");
+  openM("reset-data-modal");
+}
+function resetAll(){
+  S={entries:{},startDate:new Date().toISOString()};ps();D={};AD=tk();
+  ra();rsettings();closeM("reset-data-modal");closeM("dm");
+}
+
 // BOOT
 sd(tk());
 if(needG()){showG();}else{document.getElementById("gs").style.display="none";document.getElementById("app").classList.add("v");}
-ra();
+ra();rsettings();
 window.addEventListener("resize",()=>{if(V==="portfolio"){const k=l7();rSpark(k,k.map(x=>sc(S.entries[x])));}});
 </script>
 
