@@ -40,6 +40,7 @@
       --r:        16px; --rl:22px; --rxl:28px;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    button,input,a{touch-action:manipulation;}
     html{height:100%;-webkit-text-size-adjust:100%;}
     body{font-family:var(--font-b);background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100%;padding-bottom:calc(72px + var(--safe-bot));-webkit-font-smoothing:antialiased;overflow-x:hidden;}
     input,button{font-family:inherit;font-size:inherit;}
@@ -441,6 +442,9 @@
     <div class="stit">Data Backup</div>
     <div class="ssub">Export your full history as a CSV. Open in Google Sheets for a complete view of your 90 days.</div>
     <button class="sact p" onclick="exportCSV()">⬇ Export as CSV</button>
+    <button class="sact" style="background:var(--bg3);color:var(--text);border:1px solid var(--border)" onclick="document.getElementById('csv-import').click()">⬆ Import from CSV</button>
+    <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)"/>
+    <div id="import-feedback" style="display:none;font-size:13px;padding:10px 14px;border-radius:10px;margin-bottom:8px;font-weight:500"></div>
     <div class="sdiv"></div>
     <button class="sact d" onclick="resetAll()">⚠ Reset all data</button>
   </div>
@@ -698,6 +702,64 @@ function odp(){
 function pickD(k){sd(k);closeM("datem");sv("today");}
 
 function ra(){rl();rLogHero();if(V==="portfolio")rp();if(V==="history")rhist();}
+
+// CSV IMPORT
+function importCSV(e){
+  const file=e.target.files?.[0];if(!file)return;
+  const fb=document.getElementById("import-feedback");
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const lines=ev.target.result.trim().split("\n");
+      if(lines.length<2)throw new Error("Empty file");
+      // Parse header to find column positions
+      const headers=lines[0].split(",").map(h=>h.trim().toLowerCase());
+      const colMap={
+        date:headers.indexOf("date"),
+        sleep:headers.findIndex(h=>h==="sleep"),
+        drinks:headers.findIndex(h=>h==="drinks"),
+        trained:headers.findIndex(h=>h==="trained"),
+        ate:headers.findIndex(h=>h==="ate intentionally"||h==="ate"||(h.includes("ate")&&h.includes("intent"))),
+        focus:headers.findIndex(h=>h.includes("focus")),
+        alarm:headers.findIndex(h=>h.includes("alarm")),
+        tefillin:headers.findIndex(h=>h.includes("tefillin")),
+        phone:headers.findIndex(h=>h.includes("phone")),
+      };
+      if(colMap.date===-1)throw new Error("No date column found");
+      let imported=0,skipped=0;
+      const newEntries=Object.assign({},S.entries);
+      lines.slice(1).forEach(line=>{
+        if(!line.trim())return;
+        const cols=line.split(",");
+        const date=cols[colMap.date]?.trim();
+        if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)){skipped++;return;}
+        const entry={_saved:true};
+        // Number fields
+        if(colMap.sleep>-1&&cols[colMap.sleep]?.trim()){const v=parseFloat(cols[colMap.sleep]);if(!isNaN(v))entry.sleep=v;}
+        if(colMap.drinks>-1&&cols[colMap.drinks]?.trim()){const v=parseFloat(cols[colMap.drinks]);if(!isNaN(v))entry.drinks=v;}
+        // Bool fields
+        ["trained","ate","focus","alarm","tefillin","phone"].forEach(id=>{
+          if(colMap[id]>-1&&cols[colMap[id]]?.trim()){
+            const v=cols[colMap[id]].trim().toLowerCase();
+            if(v==="yes"||v==="true"||v==="1")entry[id]=true;
+            else if(v==="no"||v==="false"||v==="0")entry[id]=false;
+          }
+        });
+        newEntries[date]=entry;imported++;
+      });
+      S.entries=newEntries;ps();ra();
+      fb.style.display="block";fb.style.background="rgba(34,197,94,.15)";fb.style.color="var(--green)";
+      fb.textContent="✓ Imported "+imported+" entries"+(skipped>0?" ("+skipped+" skipped)":"");
+      setTimeout(()=>{fb.style.display="none";closeM("dm");},2500);
+    }catch(err){
+      fb.style.display="block";fb.style.background="rgba(239,68,68,.15)";fb.style.color="var(--red)";
+      fb.textContent="✗ "+err.message+". Make sure it's a CSV exported from this app.";
+    }
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-imported
+  e.target.value="";
+}
 
 // BOOT
 sd(tk());
