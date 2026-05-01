@@ -41,6 +41,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     button,input,a{touch-action:manipulation;}
+    button{min-height:36px;}
     html{height:100%;-webkit-text-size-adjust:100%;}
     body{font-family:var(--font-b);background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100%;padding-bottom:calc(72px + var(--safe-bot));-webkit-font-smoothing:antialiased;overflow-x:hidden;}
     input,button{font-family:inherit;font-size:inherit;}
@@ -644,12 +645,17 @@ const BASE=(()=>{let t=0,m=0;METRICS.forEach(x=>{m+=x.weight*100;if(x.type==="bo
 function scC(s){if(s===null)return"var(--text3)";if(s>=BASE+10)return"var(--green)";if(s>=BASE)return"var(--blue)";if(s>=BASE-15)return"var(--orange)";return"var(--red)";}
 function stCfg(vs){if(vs>=15)return{l:"Outperforming",bg:"rgba(34,197,94,.15)",c:"var(--green)"};if(vs>=5)return{l:"Above baseline",bg:"rgba(59,130,246,.15)",c:"var(--blue)"};if(vs>=-5)return{l:"On track",bg:"rgba(249,115,22,.15)",c:"var(--orange)"};if(vs>=-15)return{l:"Minor drawdown",bg:"rgba(239,68,68,.15)",c:"var(--red)"};return{l:"Recovering",bg:"rgba(239,68,68,.15)",c:"var(--red)"};}
 
-const tk=()=>new Date().toISOString().slice(0,10);
-const yk=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);};
-function l7(){return Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return d.toISOString().slice(0,10);});}
+// Local date helpers — always use device local time, never UTC
+function localDateStr(d=new Date()){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+const tk=()=>localDateStr();
+const yk=()=>{const d=new Date();d.setDate(d.getDate()-1);return localDateStr(d);};
+function l7(){return Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return localDateStr(d);});}
 function fr(k){const t=tk(),y=yk();if(k===t)return"Today";if(k===y)return"Yesterday";return new Date(k+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}
 
-let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{entries:{},startDate:new Date().toISOString()};})();
+let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{entries:{},startDate:"2026-04-27"};})();
 let D={},AD=tk(),V="today",PTAB="scores";
 const SK="lp90_sess";
 function ps(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -683,7 +689,7 @@ function buildCSV(){
   return[h.join(","),...rows].join("\n");
 }
 function exportCSV(){const csv=buildCSV();const uri="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);const a=document.createElement("a");a.href=uri;a.download=`life-portfolio-${tk()}.csv`;a.click();closeM("dm");}
-function resetAll(){if(!confirm("Reset all data?"))return;S={entries:{},startDate:new Date().toISOString()};ps();D={};AD=tk();ra();closeM("dm");}
+function resetAll(){S={entries:{},startDate:localDateStr()};ps();D={};AD=tk();ra();closeM("dm");}
 
 function showSync(st){
   const el=document.getElementById("ph-sync");
@@ -726,9 +732,7 @@ function sv(v){
   if(v==="history")rhist();
   if(v==="settings"){
     // Pre-populate start date picker with current value
-    const d=new Date(S.startDate);
-    const iso=d.toISOString().slice(0,10);
-    document.getElementById("s-start-input").value=iso;
+    document.getElementById("s-start-input").value=S.startDate.slice(0,10);
     rsettings();
   }
 }
@@ -744,8 +748,8 @@ function closeM(id){document.getElementById(id).classList.remove("o");}
 // LOG HERO
 function rLogHero(){
   const h=new Date().getHours();
-  const greet=h<12?"Morning":"h<17"?"Afternoon":"Evening";
-  document.getElementById("lh-greet").textContent=AD===tk()?(h<12?"Morning":"h<17"?"Afternoon":"Evening"):"Editing past entry";
+  const greet=h<12?"Morning":h<17?"Afternoon":"Evening";
+  document.getElementById("lh-greet").textContent=AD===tk()?(h<12?"Morning":h<17?"Afternoon":"Evening"):"Editing past entry";
   const isPast=AD!==tk();
   const dateEl=document.getElementById("lh-date");
   dateEl.textContent=fr(AD);dateEl.className="lh-date"+(isPast?" past":"");
@@ -785,24 +789,148 @@ function rl(){
   btn.textContent=ip?`Save ${fr(AD)}${ans<METRICS.length?" ("+ans+"/"+METRICS.length+")":""}`:(ans===METRICS.length?"Log Today":`Log Today (${ans}/${METRICS.length})`);
 }
 
+// ── Metric row HTML — built once, then surgically updated ─────────────────
 function mrow(m,idx,total){
   const v=D[m.id],ans=v!==undefined&&v!==null&&v!=="",last=idx===total-1;
   let inp="";
   if(m.type==="bool"){
     const yes=v===true,no=v===false;
-    inp=`<div class="brow"><button class="bbtn ${yes?"yes":""}" onclick="tb2('${m.id}',true)">${yes?"✓ ":""}Yes</button><button class="bbtn ${no?"no":""}" onclick="tb2('${m.id}',false)">No</button></div>`;
+    inp=`<div class="brow">
+      <button class="bbtn ${yes?"yes":""}" data-id="${m.id}" data-bval="1" onclick="tb2(this,'${m.id}',true)">${yes?"&#x2713; ":""}Yes</button>
+      <button class="bbtn ${no?"no":""}"  data-id="${m.id}" data-bval="0" onclick="tb2(this,'${m.id}',false)">No</button>
+    </div>`;
   } else {
-    const val=v??"",step=m.id==="sleep"?0.5:1,dec=Math.max(0,(parseFloat(val)||0)-step),inc=(parseFloat(val)||0)+step;
-    let hint="";
-    if(m.id==="sleep"&&ans)hint=`<span class="shint" style="color:${v>=7.5?"var(--green)":v>=6?"var(--orange)":"var(--red)"}">${v>=7.5?"On target":v>=6?"Below target":"Low"}</span>`;
-    if(m.id==="drinks"&&ans&&v>0){const wd=wkD();hint=`<span class="shint" style="color:${wd>getBudget()?"var(--red)":wd>Math.round(getBudget()*.7)?"var(--orange)":"var(--text2)"}">${wd}/${BUDGET} wk</span>`;}
-    inp=`<div class="srow"><div class="stpr ${ans?"on":""}"><button class="sbtn2" onclick="sf('${m.id}',${dec})">−</button><input class="sinp" type="number" inputmode="decimal" value="${val}" placeholder="—" step="${step}" min="0" onchange="sf('${m.id}',this.value===''?'':parseFloat(this.value))" oninput="sf('${m.id}',this.value===''?'':parseFloat(this.value))"/><button class="sbtn2" onclick="sf('${m.id}',${inc})">+</button></div><span class="sunit">${m.unit}</span>${hint}</div>`;
+    const val=v??"",step=m.id==="sleep"?0.5:1;
+    let hintHtml="";
+    if(m.id==="sleep"&&ans&&typeof v==="number"){
+      hintHtml=`<span class="shint" id="hint-${m.id}" style="color:${v>=7.5?"var(--green)":v>=6?"var(--orange)":"var(--red)"}">${v>=7.5?"On target":v>=6?"Below target":"Low"}</span>`;
+    } else if(m.id==="drinks"&&ans&&v>0){
+      const wd=wkD();
+      hintHtml=`<span class="shint" id="hint-${m.id}" style="color:${wd>getBudget()?"var(--red)":wd>Math.round(getBudget()*.7)?"var(--orange)":"var(--text2)"}">${wd}/${getBudget()} wk</span>`;
+    } else {
+      hintHtml=`<span class="shint" id="hint-${m.id}" style="display:none"></span>`;
+    }
+    inp=`<div class="srow">
+      <div class="stpr ${ans?"on":""}" id="stpr-${m.id}">
+        <button class="sbtn2" onclick="stepDec('${m.id}',${step})">&#8722;</button>
+        <input class="sinp" id="inp-${m.id}" type="number" inputmode="decimal"
+          value="${val}" placeholder="&#8212;" step="${step}" min="0"
+          onchange="sfInput('${m.id}',this)" oninput="sfInput('${m.id}',this)"/>
+        <button class="sbtn2" onclick="stepInc('${m.id}',${step})">+</button>
+      </div>
+      <span class="sunit">${m.unit}</span>${hintHtml}
+    </div>`;
   }
-  return `<div class="mrow" style="${last?"border-bottom:none":""}"><div class="mtop"><div class="mico ${ans?"on":""}">${m.icon}</div><div style="flex:1"><div class="mlbl">${m.label}</div><div class="msub">${m.sub}</div></div><button class="ibtn" onclick="oDef('${m.id}')">ⓘ</button></div><div class="minp">${inp}</div></div>`;
+  return `<div class="mrow" style="${last?"border-bottom:none":""}">
+    <div class="mtop">
+      <div class="mico ${ans?"on":""}" id="ico-${m.id}">${m.icon}</div>
+      <div style="flex:1"><div class="mlbl">${m.label}</div><div class="msub">${m.sub}</div></div>
+      <button class="ibtn" onclick="oDef('${m.id}')">&#9432;</button>
+    </div>
+    <div class="minp">${inp}</div>
+  </div>`;
 }
 
-function tb2(id,val){if(D[id]===val)D[id]=undefined;else D[id]=val;rl();}
-function sf(id,val){D[id]=val;rl();}
+// Bool: tap active button again = deselect. Never rebuilds DOM.
+function tb2(btn, id, boolVal){
+  D[id] = (D[id]===boolVal) ? undefined : boolVal;
+  const row = btn.closest(".brow");
+  const btns = row ? row.querySelectorAll(".bbtn") : [];
+  const v = D[id];
+  btns.forEach(b => {
+    const isYes = b.dataset.bval === "1";
+    const active = (v===true&&isYes)||(v===false&&!isYes);
+    b.className = "bbtn" + (active ? (isYes?" yes":" no") : "");
+    if(isYes) b.innerHTML = (v===true?"&#x2713; ":"")+"Yes";
+  });
+  updateMeta(id);
+}
+
+// Stepper buttons
+function stepDec(id,step){
+  const cur=parseFloat(D[id])||0;
+  const nv=parseFloat(Math.max(0,cur-step).toFixed(1));
+  D[id]=nv;
+  const inp=document.getElementById("inp-"+id);
+  if(inp)inp.value=nv;
+  updateMeta(id);
+}
+function stepInc(id,step){
+  const cur=parseFloat(D[id])||0;
+  const nv=parseFloat((cur+step).toFixed(1));
+  D[id]=nv;
+  const inp=document.getElementById("inp-"+id);
+  if(inp)inp.value=nv;
+  updateMeta(id);
+}
+function sfInput(id,el){
+  D[id]=el.value===''?'':parseFloat(el.value);
+  updateMeta(id);
+}
+function sf(id,val){D[id]=val;updateMeta(id);}
+
+// Surgical update — touches only what changed
+function updateMeta(id){
+  const m=METRICS.find(x=>x.id===id);
+  if(!m)return;
+  const v=D[m.id];
+  const ans=v!==undefined&&v!==null&&v!=="";
+
+  // Icon
+  const ico=document.getElementById("ico-"+id);
+  if(ico)ico.className="mico"+(ans?" on":"");
+
+  // Stepper border
+  if(m.type==="number"){
+    const stpr=document.getElementById("stpr-"+id);
+    if(stpr)stpr.className="stpr"+(ans?" on":"");
+  }
+
+  // Hint
+  const hint=document.getElementById("hint-"+id);
+  if(hint){
+    if(id==="sleep"&&ans&&typeof v==="number"){
+      hint.style.display="inline";
+      hint.style.color=v>=7.5?"var(--green)":v>=6?"var(--orange)":"var(--red)";
+      hint.textContent=v>=7.5?"On target":v>=6?"Below target":"Low";
+    } else if(id==="drinks"&&ans&&v>0){
+      const wd=wkD();
+      hint.style.display="inline";
+      hint.style.color=wd>getBudget()?"var(--red)":wd>Math.round(getBudget()*.7)?"var(--orange)":"var(--text2)";
+      hint.textContent=`${wd}/${getBudget()} wk`;
+    } else {
+      hint.style.display="none";
+    }
+  }
+
+  // Progress bar
+  const cnt=METRICS.filter(x=>D[x.id]!==undefined&&D[x.id]!==null&&D[x.id]!=="").length;
+  const prog=document.getElementById("prog");
+  if(prog)prog.style.width=`${(cnt/METRICS.length)*100}%`;
+  const lm=document.getElementById("log-meta");
+  if(lm)lm.textContent=`${cnt} of ${METRICS.length} logged`;
+
+  // Score preview
+  const s=sc(D);
+  const prev=document.getElementById("sprev");
+  if(prev){
+    if(s!==null){
+      prev.classList.add("s");
+      const d=s-BASE;
+      const psc=document.getElementById("psc");
+      const pdt=document.getElementById("pdt");
+      if(psc){psc.textContent=s;psc.style.color=scC(s);}
+      if(pdt){pdt.textContent=(d>=0?"+":"")+d+" vs baseline";pdt.style.color=d>=0?"var(--blue)":"var(--orange)";}
+    } else { prev.classList.remove("s"); }
+  }
+
+  // Save button label
+  const sbtn=document.getElementById("sbtn");
+  if(sbtn){
+    const ip=AD!==tk();
+    sbtn.textContent=ip?`Save ${fr(AD)}${cnt<METRICS.length?" ("+cnt+"/"+METRICS.length+")":""}`:(cnt===METRICS.length?"Log Today":`Log Today (${cnt}/${METRICS.length})`);
+  }
+}
 
 // PORTFOLIO
 function rp(){
@@ -876,7 +1004,7 @@ function editD(k){sd(k);sv("today");}
 // MODALS
 function oDef(id){const m=METRICS.find(x=>x.id===id);document.getElementById("diw").textContent=m.icon;document.getElementById("dtit").textContent=m.label;document.getElementById("dsub").textContent=m.sub;document.getElementById("dbod").textContent=m.def;openM("defm");}
 function odp(){
-  const today=tk();const days=Array.from({length:90},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().slice(0,10);});
+  const today=tk();const days=Array.from({length:90},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return localDateStr(d);});
   document.getElementById("dpl").innerHTML=days.map(k=>{const sel=k===AD,s=sc(S.entries[k]),has=!!S.entries[k];return`<button class="dpi ${sel?"sel":""}" onclick="pickD('${k}')"><div style="flex:1"><div class="dpil">${fr(k)}</div><div class="dpis">${has?"Entry logged":"No entry"}</div></div>${s!==null?`<span style="font-family:var(--font-d);font-size:17px;font-weight:700;color:${scC(s)}">${s}</span>`:""}${sel?`<span style="color:var(--blue);font-size:16px">✓</span>`:""}</button>`;}).join("");
   openM("datem");
 }
@@ -952,8 +1080,17 @@ function saveProfile(p){try{localStorage.setItem("lp90_profile",JSON.stringify(p
 
 let PROFILE=loadProfile();
 // Ensure start date is April 27 if it was set to today (first launch default)
-if(!S.startDate||S.startDate===new Date().toISOString()){
-  S.startDate="2026-04-27T00:00:00.000Z";ps();
+// Normalize startDate to local YYYY-MM-DD string
+if(!S.startDate||S.startDate.length>10){
+  // If it's a full ISO string, convert to local date string
+  const existing=S.startDate;
+  if(existing&&existing.length>10){
+    const d=new Date(existing);
+    S.startDate=localDateStr(d);
+  } else {
+    S.startDate="2026-04-27"; // your actual Day 1
+  }
+  ps();
 }
 
 function getDuration(){return PROFILE.duration||90;}
@@ -961,7 +1098,11 @@ function getBudget(){return PROFILE.budget||10;}
 function getUserName(){return PROFILE.name||"Eli";}
 
 function getElapsed(){
-  return Math.min(getDuration(),Math.max(1,Math.floor((Date.now()-new Date(S.startDate))/86400000)+1));
+  // Compare local dates as strings to avoid timezone drift
+  const start=new Date(S.startDate+"T00:00:00");
+  const now=new Date();
+  const diffMs=now.setHours(0,0,0,0)-start.setHours(0,0,0,0);
+  return Math.min(getDuration(),Math.max(1,Math.floor(diffMs/86400000)+1));
 }
 function getRemaining(){return Math.max(0,getDuration()-getElapsed()+1);}
 
@@ -986,7 +1127,7 @@ function rsettings(){
   if(ni&&ni!==document.activeElement)ni.value=getUserName();
 
   // Start date sub
-  const sd=new Date(S.startDate+"").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const sd=new Date(S.startDate+"T00:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
   const sel=document.getElementById("s-start-sub");
   if(sel)sel.textContent="Started "+sd;
 
@@ -1000,7 +1141,7 @@ function rsettings(){
   });
 
   // End date
-  const endD=new Date(new Date(S.startDate).getTime()+(getDuration()-1)*86400000);
+  const endD=new Date(S.startDate+"T00:00:00");endD.setDate(endD.getDate()+(getDuration()-1));
   const endSub=document.getElementById("s-end-sub");
   if(endSub)endSub.textContent="Ends "+endD.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
 
@@ -1019,7 +1160,7 @@ function rsettings(){
 function confirmStartDate(){
   const inp=document.getElementById("s-start-input").value;
   if(!inp)return;
-  S.startDate=new Date(inp+"T00:00:00.000Z").toISOString();
+  S.startDate=inp; // store as local YYYY-MM-DD
   ps();rsettings();ra();
   closeM("reset-start-modal");
 }
