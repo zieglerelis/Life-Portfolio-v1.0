@@ -761,7 +761,18 @@ function rLogHero(){
 }
 
 // LOG
-function wkD(){return l7().reduce((s,k)=>s+(S.entries[k]?.drinks?Number(S.entries[k].drinks):0),0);}
+// Weekly drink counter — sums Mon through today (resets every Monday)
+function wkD(){
+  const today=new Date();
+  const dow=today.getDay(); // 0=Sun, 1=Mon ... 6=Sat
+  const daysFromMon=dow===0?6:dow-1; // Sunday = 6 days back from Mon
+  const weekKeys=Array.from({length:daysFromMon+1},(_,i)=>{
+    const d=new Date(today);
+    d.setDate(today.getDate()-daysFromMon+i);
+    return localDateStr(d);
+  });
+  return weekKeys.reduce((s,k)=>s+(S.entries[k]?.drinks?Number(S.entries[k].drinks):0),0);
+}
 function rl(){
   const today=tk(),yday=yk(),ip=AD!==today;
   const ans=METRICS.filter(m=>D[m.id]!==undefined&&D[m.id]!==null&&D[m.id]!=="").length;
