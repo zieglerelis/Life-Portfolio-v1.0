@@ -28,18 +28,18 @@
     .greeting-bg::before{content:'';position:absolute;top:-30%;left:-10%;width:120%;height:120%;background:radial-gradient(ellipse at 35% 45%,rgba(59,130,246,0.28) 0%,transparent 58%),radial-gradient(ellipse at 75% 65%,rgba(167,139,250,0.18) 0%,transparent 52%);animation:gshift 10s ease-in-out infinite alternate;}
     @keyframes gshift{from{transform:scale(1);}to{transform:scale(1.06) rotate(1.5deg);}}
     .greeting-content{position:relative;z-index:2;text-align:center;width:100%;}
-    .g-time{font-family:var(--font-m);font-size:10px;letter-spacing:3.5px;color:var(--text3);text-transform:uppercase;margin-bottom:32px;animation:fup 0.8s ease 0.1s both;}
-    .g-sal{font-family:var(--font-d);font-size:46px;font-weight:700;color:var(--text);line-height:1.1;animation:fup 0.8s ease 0.25s both;}
-    .g-name{font-family:var(--font-d);font-size:46px;font-weight:400;color:var(--text2);font-style:italic;line-height:1.1;animation:fup 0.8s ease 0.38s both;}
-    .g-div{width:40px;height:1px;background:var(--border);margin:30px auto;animation:fup 0.8s ease 0.5s both;}
-    .g-stats{display:flex;gap:40px;justify-content:center;animation:fup 0.8s ease 0.6s both;}
+    .g-time{font-family:var(--font-m);font-size:10px;letter-spacing:3.5px;color:var(--text3);text-transform:uppercase;margin-bottom:32px;opacity:1;animation:fup 0.8s ease 0.1s forwards;}
+    .g-sal{font-family:var(--font-d);font-size:46px;font-weight:700;color:var(--text);line-height:1.1;opacity:1;animation:fup 0.8s ease 0.25s forwards;}
+    .g-name{font-family:var(--font-d);font-size:46px;font-weight:400;color:var(--text2);font-style:italic;line-height:1.1;opacity:1;animation:fup 0.8s ease 0.38s forwards;}
+    .g-div{width:40px;height:1px;background:var(--border);margin:30px auto;opacity:1;animation:fup 0.8s ease 0.5s forwards;}
+    .g-stats{display:flex;gap:40px;justify-content:center;opacity:1;animation:fup 0.8s ease 0.6s forwards;}
     .g-sv{font-family:var(--font-d);font-size:36px;font-weight:700;color:var(--text);line-height:1;}
     .g-sl{font-family:var(--font-m);font-size:9px;letter-spacing:2.5px;color:var(--text3);text-transform:uppercase;margin-top:6px;}
-    .g-cta{margin-top:52px;animation:fup 0.8s ease 0.75s both;}
+    .g-cta{margin-top:52px;opacity:1;animation:fup 0.8s ease 0.75s forwards;}
     .g-btn{background:var(--blue);color:#fff;border:none;padding:17px 48px;border-radius:100px;font-size:15px;font-weight:700;letter-spacing:0.3px;box-shadow:0 8px 32px rgba(59,130,246,0.4);transition:transform 0.15s;}
     .g-btn:active{transform:scale(0.97);}
-    .g-quote{margin-top:28px;font-size:13px;color:var(--text3);font-style:italic;animation:fup 0.8s ease 0.9s both;}
-    @keyframes fup{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .g-quote{margin-top:28px;font-size:13px;color:var(--text3);font-style:italic;opacity:1;animation:fup 0.8s ease 0.9s forwards;}
+    @keyframes fup{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
     /* APP */
     .app{opacity:0;transition:opacity 0.4s ease;}
     .app.visible{opacity:1;}
@@ -52,7 +52,7 @@
     .tab-btn.active .tab-label{color:var(--blue);font-weight:600;}
     /* VIEWS */
     .view{display:none;}
-    .view.active{display:block;animation:vin 0.28s ease;}
+    .view.active{display:block;animation:vin 0.28s ease forwards;}
     @keyframes vin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
     /* VIEW HERO */
     .view-hero{padding:var(--safe-top) 20px 0;position:relative;overflow:hidden;}
@@ -146,7 +146,7 @@
     .port-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:12px 0 10px;font-size:13px;font-weight:400;color:var(--text2);transition:all 0.15s;}
     .port-tab.active{color:var(--blue);font-weight:600;border-bottom-color:var(--blue);}
     .ptc{display:none;padding:16px 20px 0;}
-    .ptc.active{display:block;animation:vin 0.2s ease;}
+    .ptc.active{display:block;animation:vin 0.2s ease forwards;}
     /* STAT CARDS */
     .stat-card{background:var(--card);border-radius:var(--rl);padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
     .stat-title{font-family:var(--font-m);font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;}
@@ -289,9 +289,9 @@
 <div id="greeting" class="greeting">
   <div class="greeting-bg"></div>
   <div class="greeting-content">
-    <div class="g-time" id="g-time"></div>
-    <div class="g-sal" id="g-sal"></div>
-    <div class="g-name" id="g-name"></div>
+    <div class="g-time" id="g-time">Loading...</div>
+    <div class="g-sal" id="g-sal">Good morning,</div>
+    <div class="g-name" id="g-name">Eli.</div>
     <div class="g-div"></div>
     <div class="g-stats">
       <div><div class="g-sv" id="g-left">—</div><div class="g-sl">Days Left</div></div>
@@ -299,7 +299,7 @@
       <div><div class="g-sv" id="g-log">—</div><div class="g-sl">Logged</div></div>
     </div>
     <div class="g-cta"><button class="g-btn" id="g-start">Start logging →</button></div>
-    <div class="g-quote" id="g-quote"></div>
+    <div class="g-quote" id="g-quote">Show up even when it's imperfect.</div>
   </div>
 </div>
 <!-- APP -->
@@ -536,7 +536,35 @@ function doExport(){const csv=buildCSV(APP.state.entries),uri=‘data:text/csv;c
 function doImport(e){const file=e.target.files&&e.target.files[0];if(!file)return;const fb=document.getElementById(‘import-fb’);fb.className=‘modal-fb’;const reader=new FileReader();reader.onload=ev=>{try{const {entries,imported,skipped}=importCSV(ev.target.result);Object.assign(APP.state.entries,entries);save();render();fb.textContent=`✓ Imported ${imported} entries${skipped>0?` (${skipped} skipped)`:''}`;fb.className=‘modal-fb ok’;setTimeout(()=>closeM(‘m-backup’),2500);}catch(err){fb.textContent=‘✗ ‘+err.message;fb.className=‘modal-fb err’;}};reader.readAsText(file);e.target.value=’’;}
 
 /* GREETING */
-function showGreeting(){const h=new Date().getHours();document.getElementById(‘g-sal’).textContent=h<12?‘Good morning,’:h<17?‘Good afternoon,’:‘Good evening,’;document.getElementById(‘g-time’).textContent=new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’});document.getElementById(‘g-name’).textContent=(APP.profile.name||‘Eli’)+’.’;const k7=l7(),sc7=k7.map(k=>sEntry(APP.state.entries[k])).filter(s=>s!==null);const avg=sc7.length?Math.round(sc7.reduce((a,b)=>a+b,0)/sc7.length):null;const elapsed=Math.min(APP.profile.duration,dElapsed(APP.state.startDate));document.getElementById(‘g-left’).textContent=Math.max(0,APP.profile.duration-elapsed+1);document.getElementById(‘g-avg’).textContent=avg!==null?avg:’—’;document.getElementById(‘g-log’).textContent=Object.keys(APP.state.entries).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).length;document.getElementById(‘g-quote’).textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];}
+function showGreeting(){
+try {
+const h=new Date().getHours();
+const sal=h<12?‘Good morning,’:h<17?‘Good afternoon,’:‘Good evening,’;
+const name=(APP.profile.name||‘Eli’)+’.’;
+const k7=l7(),sc7=k7.map(k=>sEntry(APP.state.entries[k])).filter(s=>s!==null);
+const avg=sc7.length?Math.round(sc7.reduce((a,b)=>a+b,0)/sc7.length):null;
+const elapsed=Math.min(APP.profile.duration,dElapsed(APP.state.startDate));
+const remaining=Math.max(0,APP.profile.duration-elapsed+1);
+const logged=Object.keys(APP.state.entries).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).length;
+const quote=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+set(‘g-sal’,sal);
+set(‘g-time’,new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’}));
+set(‘g-name’,name);
+set(‘g-left’,remaining);
+set(‘g-avg’,avg!==null?avg:’—’);
+set(‘g-log’,logged);
+set(‘g-quote’,quote);
+} catch(e) {
+// Fallback: set minimal content so greeting is never blank
+const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+const h=new Date().getHours();
+set(‘g-sal’,h<12?‘Good morning,’:h<17?‘Good afternoon,’:‘Good evening,’);
+set(‘g-name’,‘Eli.’);
+set(‘g-left’,’—’); set(‘g-avg’,’—’); set(‘g-log’,’—’);
+set(‘g-quote’,‘Show up even when it's imperfect.’);
+}
+}
 function dismiss(){sessionStorage.setItem(SESS,String(Date.now()));document.getElementById(‘greeting’).classList.add(‘out’);document.getElementById(‘app’).classList.add(‘visible’);setTimeout(()=>{document.getElementById(‘greeting’).style.display=‘none’;},700);}
 function needGreeting(){const l=sessionStorage.getItem(SESS);return!l||(Date.now()-parseInt(l,10))>TTL;}
 
@@ -558,7 +586,14 @@ document.getElementById(‘reset-ok’).addEventListener(‘click’,doReset);
 window.addEventListener(‘resize’,()=>{if(APP.view===‘portfolio’)renderPortfolio();});
 
 /* BOOT */
+try {
 setDate(tKey());
 if(needGreeting()){showGreeting();render();}
 else{document.getElementById(‘greeting’).style.display=‘none’;document.getElementById(‘app’).classList.add(‘visible’);render();}
+} catch(e) {
+// Last resort: show greeting with minimal content
+showGreeting();
+const app=document.getElementById(‘app’);
+if(app)app.classList.add(‘visible’);
+}
 </script></body></html>
