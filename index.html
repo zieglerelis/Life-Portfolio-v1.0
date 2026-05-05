@@ -568,6 +568,7 @@ set(‘g-quote’,‘Show up even when it's imperfect.’);
 function dismiss(){sessionStorage.setItem(SESS,String(Date.now()));document.getElementById(‘greeting’).classList.add(‘out’);document.getElementById(‘app’).classList.add(‘visible’);setTimeout(()=>{document.getElementById(‘greeting’).style.display=‘none’;},700);}
 function needGreeting(){const l=sessionStorage.getItem(SESS);return!l||(Date.now()-parseInt(l,10))>TTL;}
 
+document.addEventListener(‘DOMContentLoaded’,function(){
 /* GLOBAL EVENTS */
 document.querySelectorAll(’.tab-btn’).forEach(b=>b.addEventListener(‘click’,()=>{APP.view=b.dataset.view;render();}));
 document.getElementById(‘g-start’).addEventListener(‘click’,dismiss);
@@ -596,4 +597,5 @@ showGreeting();
 const app=document.getElementById(‘app’);
 if(app)app.classList.add(‘visible’);
 }
-</script></body></html>
+
+});</script></body></html>
