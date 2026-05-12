@@ -10,7 +10,32 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <title>Life Portfolio</title>
   <style>
-    :root{--bg:#0a0c10;--bg2:#111318;--bg3:#161820;--card:#13151c;--card2:#1a1d26;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);--text:#f0f0f5;--text2:#8b8fa8;--text3:#3d4058;--blue:#3b82f6;--blue-d:#2563eb;--blue-g:rgba(59,130,246,.15);--green:#22c55e;--green-d:#16a34a;--orange:#f97316;--red:#ef4444;--purple:#a78bfa;--teal:#2dd4bf;--font-d:Georgia,'Times New Roman',serif;--font-b:-apple-system,'Helvetica Neue',Arial,sans-serif;--font-m:'Courier New',monospace;--safe-top:env(safe-area-inset-top,44px);--safe-bot:env(safe-area-inset-bottom,24px);--r:16px;--rl:22px;}
+    :root{
+      --bg:#0a0c10;--bg2:#111318;--bg3:#161820;--card:#13151c;--card2:#1a1d26;
+      --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);
+      --text:#f0f0f5;--text2:#8b8fa8;--text3:#3d4058;
+      --blue:#3b82f6;--blue-d:#2563eb;--blue-g:rgba(59,130,246,.15);
+      --green:#22c55e;--green-d:#16a34a;--orange:#f97316;--red:#ef4444;
+      --purple:#a78bfa;--teal:#2dd4bf;
+      --icon-inactive:#8b8fa8;
+      --font-d:Georgia,'Times New Roman',serif;
+      --font-b:-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --font-m:'Courier New',monospace;
+      --safe-top:env(safe-area-inset-top,44px);--safe-bot:env(safe-area-inset-bottom,24px);
+      --r:16px;--rl:22px;--shadow:none;
+    }
+    @media(prefers-color-scheme:light){
+      :root{
+        --bg:#f5f0e8;--bg2:#ede8df;--bg3:#e4ddd3;--card:#faf7f2;--card2:#f0ebe1;
+        --border:rgba(60,50,30,.1);--border2:rgba(60,50,30,.06);
+        --text:#2c2520;--text2:#7a6f62;--text3:#b0a598;
+        --blue:#2563eb;--blue-d:#1d4ed8;--blue-g:rgba(37,99,235,.1);
+        --green:#16a34a;--green-d:#15803d;--orange:#c2410c;--red:#dc2626;
+        --purple:#6d28d9;--teal:#0d9488;
+        --icon-inactive:#7a6f62;
+        --shadow:0 2px 10px rgba(60,40,20,.07),0 1px 3px rgba(60,40,20,.04);
+      }
+    }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     html{height:100%;-webkit-text-size-adjust:100%;}
     body{font-family:var(--font-b);background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100%;padding-bottom:calc(72px + var(--safe-bot));-webkit-font-smoothing:antialiased;overflow-x:hidden;}
@@ -27,7 +52,7 @@
 #greeting{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;}
 #greeting.out{display:none;}
 .g-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.g-bg::before{content:'';position:absolute;top:-30%;left:-10%;width:120%;height:120%;background:radial-gradient(ellipse at 35% 45%,rgba(59,130,246,.28) 0%,transparent 58%),radial-gradient(ellipse at 75% 65%,rgba(167,139,250,.18) 0%,transparent 52%);animation:gshift 10s ease-in-out infinite alternate;}
+.g-bg::before{content:'';position:absolute;top:-30%;left:-10%;width:120%;height:120%;background:radial-gradient(ellipse at 35% 45%,rgba(59,130,246,.28) 0%,transparent 58%),radial-gradient(ellipse at 75% 65%,rgba(167,139,250,.18) 0%,transparent 52%);animation:gshift 10s ease-in-out infinite alternate;}@media(prefers-color-scheme:light){.g-bg::before{background:radial-gradient(ellipse at 35% 45%,rgba(37,99,235,.18) 0%,transparent 55%),radial-gradient(ellipse at 75% 65%,rgba(109,40,217,.1) 0%,transparent 50%);}}@media(prefers-color-scheme:light){.g-bg::before{background:radial-gradient(ellipse at 35% 45%,rgba(37,99,235,.15) 0%,transparent 55%),radial-gradient(ellipse at 75% 65%,rgba(109,40,217,.1) 0%,transparent 50%);}}
 @keyframes gshift{from{transform:scale(1);}to{transform:scale(1.06) rotate(1.5deg);}}
 .g-content{position:relative;z-index:2;text-align:center;width:100%;}
 .g-time{font-family:var(--font-m);font-size:10px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:28px;}
@@ -47,7 +72,7 @@
 #app.visible{opacity:1;}
 
 /* TABBAR */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(13,15,20,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bot);z-index:50;}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(245,240,232,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bot);z-index:50;}@media(prefers-color-scheme:dark){.tabbar{background:rgba(13,15,20,.95);}}@media(prefers-color-scheme:dark){.tabbar{background:rgba(13,15,20,.95);}}
 .tab-btn{flex:1;background:none;border:none;padding:10px 0 2px;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .tab-icon{font-size:20px;}
 .tab-label{font-size:10px;font-weight:400;color:var(--text3);letter-spacing:.3px;}
@@ -90,11 +115,11 @@
 /* METRICS */
 .log-body{padding:0 20px;}
 .section-label{font-family:var(--font-m);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;margin-top:18px;}
-.metric-group{background:var(--card);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;}
+.metric-group{background:var(--card);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);}
 .metric-row{border-bottom:1px solid var(--border2);}
 .metric-row:last-child{border-bottom:none;}
 .metric-top{display:flex;align-items:center;gap:12px;padding:14px 16px 8px;}
-.m-icon{width:34px;height:34px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.m-icon{width:34px;height:34px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:var(--icon-inactive);}.m-icon.on{color:var(--blue);}
 .m-icon.on{background:var(--blue-g);}
 .m-label{font-size:15px;font-weight:600;color:var(--text);}
 .m-sub{font-size:11px;color:var(--text2);margin-top:1px;}
@@ -149,7 +174,7 @@
 .port-tab.active{color:var(--blue);font-weight:600;border-bottom-color:var(--blue);}
 .ptc{display:none;padding:16px 20px 0;}
 .ptc.active{display:block;}
-.stat-card{background:var(--card);border-radius:var(--rl);padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+.stat-card{background:var(--card);border-radius:var(--rl);padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--shadow);}
 .stat-title{font-family:var(--font-m);font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;}
 .bar-row:last-child{margin-bottom:0;}
@@ -274,7 +299,6 @@
 .bd-bar-trk{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;}
 .bd-bar-fill{height:100%;border-radius:2px;}
 .bd-pts{font-family:var(--font-m);font-size:12px;font-weight:600;width:36px;text-align:right;}
-.bd-status{font-size:11px;width:20px;text-align:center;flex-shrink:0;}
 ```
 
   </style>
@@ -306,10 +330,10 @@
 </div>
 
 <nav class="tabbar">
-  <button class="tab-btn active" data-view="log"><div class="tab-icon">&#x270F;</div><div class="tab-label">Log</div></button>
-  <button class="tab-btn" data-view="portfolio"><div class="tab-icon">&#x1F4CA;</div><div class="tab-label">Portfolio</div></button>
-  <button class="tab-btn" data-view="history"><div class="tab-icon">&#x1F4C5;</div><div class="tab-label">History</div></button>
-  <button class="tab-btn" data-view="settings"><div class="tab-icon">&#x2699;</div><div class="tab-label">Settings</div></button>
+  <button class="tab-btn active" data-view="log"><div class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="tab-label">Log</div></button>
+  <button class="tab-btn" data-view="portfolio"><div class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="tab-label">Portfolio</div></button>
+  <button class="tab-btn" data-view="history"><div class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="tab-label">History</div></button>
+  <button class="tab-btn" data-view="settings"><div class="tab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="17" cy="12" r="3"/></svg></div><div class="tab-label">Settings</div></button>
 </nav>
 
 <!-- MODALS -->
@@ -420,14 +444,15 @@
 var SK='lp90_v7',PK='lp90_profile',SESS='lp90_sess',TTL=30*60*1000;
 
 var M=[
-  {id:'sleep',   label:'Sleep',            sub:'Last night - target 7.5hrs',pillar:'body',  type:'number',unit:'hrs',weight:1.5,baseline:7,   icon:'🌙',def:'Hours from lights out to alarm. Target is 7.5hrs. The app tracks your 7-day rolling average, so one bad night does not define the week.'},
-  {id:'drinks',  label:'Drinks',           sub:"Today's total",             pillar:'body',  type:'number',unit:'',  weight:1.5,baseline:2,   icon:'💧',def:"Total standard drinks today. Weekly budget is configurable. A heavy wedding weekend is a drawdown - the question is how fast you recover."},
-  {id:'trained', label:'Trained',          sub:'20+ min of movement',       pillar:'body',  type:'bool',  unit:'',  weight:1.5,baseline:0.6, icon:'⚡',def:'20+ minutes of intentional movement. Hotel gym counts. A 30-min ride counts. A walk does not, unless it was genuinely all you had.'},
-  {id:'ate',     label:'Ate Intentionally',sub:'2 protein-focused choices', pillar:'body',  type:'bool',  unit:'',  weight:1.0,baseline:0.7, icon:'🌿',def:'You made at least two conscious food choices with protein in mind. Just: did you think about it, or did food just happen to you?'},
-  {id:'focus',   label:'Deep Focus',       sub:'45+ min uninterrupted',     pillar:'mind',  type:'bool',  unit:'',  weight:1.0,baseline:0.65,icon:'🎯',def:"One uninterrupted block of 45+ minutes. Phone face-down, no Slack, working on something that actually matters. One block. That's the whole ask."},
-  {id:'alarm',   label:'First Alarm',      sub:'No snooze',                 pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.55,icon:'⏰',def:"Up on the first alarm, no snooze. When this slips during a hectic stretch, the other discipline habits usually follow. It's a leading indicator."},
-  {id:'tefillin',label:'Tefillin',         sub:'Daily anchor',              pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.75,icon:'✦', def:'You know what this means. This is your identity anchor - the habit that, when you skip during a chaotic stretch, you feel the drift most.'},
-  {id:'phone',   label:'Phone Down',       sub:'30 min before sleep',       pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.5, icon:'📵',def:'Phone left your hand at least 30 minutes before you fell asleep. Plugged in across the room counts. Scrolling in bed does not.'},
+  {id:'sleep',    label:'Sleep',            sub:'Last night - target 7.5hrs',pillar:'body',  type:'number',unit:'hrs',weight:1.5,baseline:7,   icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',def:'Hours from lights out to alarm. Target is 7.5hrs. The app tracks your 7-day rolling average, so one bad night does not define the week.'},
+  {id:'drinks',   label:'Drinks',           sub:"Today's total",             pillar:'body',  type:'number',unit:'',  weight:1.5,baseline:2,   icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8M12 11v11M5 3h14l-2 7a5 5 0 0 1-10 0L5 3z"/></svg>',def:'Total standard drinks today. Weekly budget is configurable. A heavy wedding weekend is a drawdown - the question is how fast you recover.'},
+  {id:'trained',  label:'Trained',          sub:'20+ min of movement',       pillar:'body',  type:'bool',  unit:'',  weight:1.5,baseline:0.6, icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14M18 5v14"/><path d="M3 8h3M18 8h3M3 16h3M18 16h3"/><line x1="9" y1="12" x2="15" y2="12"/></svg>',def:'20+ minutes of intentional movement. Hotel gym counts. A 30-min ride counts. A walk does not, unless it was genuinely all you had.'},
+  {id:'ate',      label:'Ate Intentionally',sub:'2 protein-focused choices', pillar:'body',  type:'bool',  unit:'',  weight:1.0,baseline:0.7, icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',def:'You made at least two conscious food choices with protein in mind. Just: did you think about it, or did food just happen to you?'},
+  {id:'focus',    label:'Deep Focus',       sub:'45+ min uninterrupted',     pillar:'mind',  type:'bool',  unit:'',  weight:1.0,baseline:0.65,icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>',def:"One uninterrupted block of 45+ minutes. Phone face-down, no Slack, working on something that actually matters. One block. That's the whole ask."},
+  {id:'alarm',    label:'First Alarm',      sub:'No snooze',                 pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.55,icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',def:"Up on the first alarm, no snooze. When this slips during a hectic stretch, the other discipline habits usually follow. It's a leading indicator."},
+  {id:'tefillin', label:'Tefillin',         sub:'Daily anchor',              pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.75,icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8c0-2.5 2-4 4-4s4 1.5 4 4-2 4-4 4"/><path d="M17 16c0 2.5-2 4-4 4s-4-1.5-4-4 2-4 4-4"/><line x1="11" y1="12" x2="13" y2="12"/></svg>',torahIcon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>',def:'You know what this means. This is your identity anchor - the habit that, when you skip during a chaotic stretch, you feel the drift most. On Shabbat this becomes Torah Study (30+ min).'},
+  {id:'phone',    label:'Phone Down',       sub:'30 min before sleep',       pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0.5, icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/><line x1="9" y1="8" x2="15" y2="14" stroke-width="1.5" stroke-dasharray="2,2"/><line x1="15" y1="8" x2="9" y2="14" stroke-width="1.5" stroke-dasharray="2,2"/></svg>',def:'Phone left your hand at least 30 minutes before you fell asleep. Plugged in across the room counts. Scrolling in bed does not.'},
+  {id:'discipline',label:'Discipline',      sub:'Maintained standard',       pillar:'spirit',type:'bool',  unit:'',  weight:1.0,baseline:0,   icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="11" rx="2" ry="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>',def:'You maintained your standard today. You know what this means. This one is just between you and the app.'},
 ];
 
 var PIL={body:{label:'Body',color:'#3b82f6'},mind:{label:'Mind',color:'#2dd4bf'},spirit:{label:'Spirit',color:'#a78bfa'}};
@@ -443,10 +468,19 @@ function dElapsed(start){var s=new Date(start+'T00:00:00'),n=new Date();var ms=n
 function wkDrinks(entries){var today=new Date(),dow=today.getDay(),dfm=dow===0?6:dow-1,t=0;for(var i=0;i<=dfm;i++){var d=new Date(today);d.setDate(today.getDate()-dfm+i);var e=entries[lds(d)];if(e&&e.drinks!==undefined&&e.drinks!==null&&e.drinks!=='')t+=Number(e.drinks);}return t;}
 
 // SCORING
-function sMetric(m,v){if(v===undefined||v===null||v==='')return null;if(m.type==='bool')return v===true?100:0;if(m.id==='sleep')return Math.min(100,Math.max(0,((v-4.5)/3)*100));if(m.id==='drinks')return Math.max(0,100-v*16.67);return null;}
-function sEntry(entry){if(!entry)return null;var tw=0,mw=0,any=false;for(var i=0;i<M.length;i++){var m=M[i],r=sMetric(m,entry[m.id]);mw+=m.weight*100;if(r!==null){tw+=r*m.weight;any=true;}}return any?Math.round((tw/mw)*100):null;}
-function sBD(entry){var mw=0;for(var i=0;i<M.length;i++)mw+=M[i].weight*100;return M.map(function(m){var raw=entry?sMetric(m,entry[m.id]):null;return{m:m,raw:raw,contrib:raw!==null?Math.round((raw*m.weight/mw)*100):null,max:Math.round((100*m.weight/mw)*100)};});}
-var BASE=(function(){var t=0,mx=0;for(var i=0;i<M.length;i++){var m=M[i];mx+=m.weight*100;var r=m.type==='bool'?m.baseline*100:m.id==='sleep'?Math.min(100,Math.max(0,((m.baseline-4.5)/3)*100)):Math.max(0,100-m.baseline*16.67);t+=r*m.weight;}return Math.round((t/mx)*100);})();
+function sMetric(m,v,isSaved){
+  if(m.id==='drinks'){
+    if(v===undefined||v===null||v===''){return isSaved?100:null;}
+    return Math.max(0,100-Number(v)*16.67);
+  }
+  if(v===undefined||v===null||v==='')return null;
+  if(m.type==='bool')return v===true?100:0;
+  if(m.id==='sleep')return Math.min(100,Math.max(0,((v-4.5)/3)*100));
+  return null;
+}
+function sEntry(entry){if(!entry)return null;var saved=!!entry._saved,tw=0,mw=0,any=false;for(var i=0;i<M.length;i++){var m=M[i],r=sMetric(m,entry[m.id],saved);mw+=m.weight*100;if(r!==null){tw+=r*m.weight;any=true;}}return any?Math.round((tw/mw)*100):null;}
+function sBD(entry){var mw=0,saved=entry?!!entry._saved:false;for(var i=0;i<M.length;i++)mw+=M[i].weight*100;return M.map(function(m){var raw=entry?sMetric(m,entry[m.id],saved):null;return{m:m,raw:raw,contrib:raw!==null?Math.round((raw*m.weight/mw)*100):null,max:Math.round((100*m.weight/mw)*100)};});}
+var BASE=(function(){var t=0,mx=0;for(var i=0;i<M.length;i++){var m=M[i];mx+=m.weight*100;var r=m.type==='bool'?m.baseline*100:m.id==='sleep'?Math.min(100,Math.max(0,((m.baseline-4.5)/3)*100)):Math.max(0,100-m.baseline*16.67);t+=r*m.weight;}return Math.round((t/mx)*100);})();/* Note: BASE uses 0 baseline for drinks (1 saved entry with 0 drinks = 100pts) */
 function sColor(s){if(s===null||s===undefined)return'var(--text3)';if(s>=BASE+10)return'var(--green)';if(s>=BASE)return'var(--blue)';if(s>=BASE-15)return'var(--orange)';return'var(--red)';}
 function sCfg(vs){if(vs>=15)return{label:'Outperforming',bg:'rgba(34,197,94,0.15)',color:'var(--green)'};if(vs>=5)return{label:'Above baseline',bg:'var(--blue-g)',color:'var(--blue)'};if(vs>=-5)return{label:'On track',bg:'rgba(249,115,22,0.15)',color:'var(--orange)'};if(vs>=-15)return{label:'Minor drawdown',bg:'rgba(239,68,68,0.15)',color:'var(--red)'};return{label:'Recovering',bg:'rgba(239,68,68,0.15)',color:'var(--red)'};}
 
@@ -500,6 +534,10 @@ function render(){
 function saveLbl(ans,isPast,ad){if(isPast)return'Save '+friendly(ad)+(ans<M.length?' ('+ans+'/'+M.length+')':'');return ans===M.length?'Log Today':'Log Today ('+ans+'/'+M.length+')';}
 
 function mRow(m,last){
+  // Shabbat swap: on Saturday, tefillin becomes Torah Study
+  if(m.id==='tefillin'&&new Date().getDay()===6){
+    m=Object.assign({},m,{label:'Torah Study',sub:'30+ min, shul or self-study',icon:m.torahIcon||m.icon,def:'Shabbat: at least 30 minutes of Torah study today - synagogue service counts, as does independent learning.'});
+  }
   var v=APP.draft[m.id],ans=v!==undefined&&v!==null&&v!=='',inp='';
   if(m.type==='bool'){
     inp='<div class="bool-row">'
@@ -933,50 +971,22 @@ function showGreeting(){
 
 function dismiss(){el('greeting').classList.add('out');el('app').style.opacity='1';sessionStorage.setItem(SESS,String(Date.now()));}
 function needGreeting(){var l=sessionStorage.getItem(SESS);return!l||(Date.now()-parseInt(l,10))>TTL;}
-
-// INIT — everything inside window.onload so DOM is 100% ready
-window.onload = function() {
-  // Tab buttons
-  document.querySelectorAll('.tab-btn').forEach(function(b){
-    b.onclick=function(){APP.view=b.dataset.view;render();};
-  });
-
-  // Greeting button
+window.onload=function(){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.onclick=function(){APP.view=b.dataset.view;render();};});
   el('g-start').onclick=dismiss;
-
-  // Close buttons
-  document.querySelectorAll('[data-close]').forEach(function(b){
-    b.onclick=function(){closeM(b.dataset.close);};
-  });
-
-  // Modal overlay close
-  document.querySelectorAll('.modal-ov').forEach(function(ov){
-    ov.onclick=function(e){if(e.target===ov)closeM(ov.id);};
-    var sh=ov.querySelector('.modal-sheet');
-    if(sh)sh.onclick=function(e){e.stopPropagation();};
-  });
-
-  // Delete
+  document.querySelectorAll('[data-close]').forEach(function(b){b.onclick=function(){closeM(b.dataset.close);};});
+  document.querySelectorAll('.modal-ov').forEach(function(ov){ov.onclick=function(e){if(e.target===ov)closeM(ov.id);};var sh=ov.querySelector('.modal-sheet');if(sh)sh.onclick=function(e){e.stopPropagation();};});
   el('del-ok').onclick=function(){var k=APP.pendingDel;if(!k)return;delete APP.state.entries[k];if(k===APP.activeDate){APP.activeDate=tKey();APP.draft={};}APP.pendingDel=null;save();closeM('m-delete');render();};
-
-  // Budget
   el('bud-dec').onclick=function(){APP.budgetTemp=Math.max(1,APP.budgetTemp-1);updateBudM();};
   el('bud-inc').onclick=function(){APP.budgetTemp=Math.min(30,APP.budgetTemp+1);updateBudM();};
   el('bud-ok').onclick=function(){APP.profile.budget=APP.budgetTemp;saveProf();closeM('m-budget');render();};
-
-  // Start date
   el('start-ok').onclick=function(){var v=el('start-input').value;if(v&&/^\d{4}-\d{2}-\d{2}$/.test(v)){APP.state.startDate=v;save();closeM('m-startdate');render();}};
-
-  // Backup
   el('export-btn').onclick=doExport;
   el('import-trigger').onclick=function(){el('import-input').click();};
   el('import-input').onchange=doImport;
   el('backup-reset-btn').onclick=function(){closeM('m-backup');openRstM();};
   el('reset-ok').onclick=doReset;
-
   window.onresize=function(){if(APP.view==='portfolio')renderPortfolio();};
-
-  // Boot
   setDate(tKey());
   showGreeting();
   if(!needGreeting()){el('greeting').classList.add('out');el('app').style.opacity='1';}
